@@ -2,13 +2,20 @@ DROP DATABASE IF EXISTS el_zorro;
 CREATE DATABASE el_zorro;
 USE el_zorro;
 
+CREATE TABLE rol(
+  rol_id INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(10) NOT NULL
+);
+
 CREATE TABLE empleado (
   empleado_id INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(50) NOT NULL,
   apellido_materno VARCHAR(50) NOT NULL,
   apellido_paterno VARCHAR(50),
+  rol_id INT NOT NULL,
   usuario VARCHAR(50) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL
+  password VARCHAR(255) NOT NULL,
+  FOREIGN KEY (rol_id) REFERENCES rol(rol_id)
 );
 
 CREATE TABLE cliente (
