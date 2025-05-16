@@ -25,10 +25,10 @@ public class EmpleadoDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Usuario no encontrado: " + username);
         }
 
-        return User.builder()
-                .username(empleado.getUsuario())
+        return User.withUsername(empleado.getUsuario())
                 .password(empleado.getPassword())
-                .roles(empleado.getRol().getNombre().toUpperCase())
+                .roles("ADMIN")
+                .authorities("ROLE_ADMIN")
                 .build();
     }
 }

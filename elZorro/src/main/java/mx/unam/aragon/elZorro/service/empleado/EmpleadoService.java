@@ -10,5 +10,5 @@ public interface EmpleadoService {
     List<EmpleadoEntity> findAll();
     void deleteById(Long id);
     EmpleadoEntity findById(Long id);
-    EmpleadoEntity crearEmpleado(String usuario, String passwordPlano, RolEntity rol);
+    EmpleadoEntity crearEmpleado(String nombre, String apellidoPaterno, String apellidoMaterno, String usuario, String passwordPlano, RolEntity rol);
 }

@@ -46,10 +46,13 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
     @Override
     @Transactional
-    public EmpleadoEntity crearEmpleado(String usuario, String passwordPlano, RolEntity rol) {
+    public EmpleadoEntity crearEmpleado(String nombre, String apellidoPaterno, String apellidoMaterno, String usuario, String password, RolEntity rol) {
         EmpleadoEntity empleado = EmpleadoEntity.builder()
+                .nombre(nombre)
+                .apellidoPaterno(apellidoPaterno)
+                .apellidoMaterno(apellidoMaterno)
                 .usuario(usuario)
-                .password(passwordEncoder.encode(passwordPlano))
+                .password(passwordEncoder.encode(password))
                 .rol(rol)
                 .build();
 
