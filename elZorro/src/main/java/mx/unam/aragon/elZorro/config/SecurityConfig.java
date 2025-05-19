@@ -32,7 +32,10 @@ public class SecurityConfig {
                                 "/error",
                                 "/css/**",
                                 "/js/**",
-                                "/img/**"
+                                "/img/**",
+
+                                "/caja/**",
+                                "/api/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
