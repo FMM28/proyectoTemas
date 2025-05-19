@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión | Abarrotes El Zorro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de colores personalizados en Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'zorro-red': '#b50000',
+                        'zorro-dark-red': '#660000',
+                        'zorro-yellow': '#fddc01',
+                        'zorro-brown': '#a15f4e',
+                        'zorro-light': '#f5f5f5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zorro-light flex items-center justify-center min-h-screen">
+<!-- Contenedor principal -->
+<div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-zorro-yellow">
+    <!-- Logo y Título -->
+    <div class="flex flex-col items-center mb-6">
+        <!-- GIF animado - IMPORTANTE: debe estar en src/main/resources/static/img/ -->
+        <img th:src="@{/img/logo-zorro.gif}" alt="Logo El Zorro" class="h-32 mb-4">
+        <h1 class="text-3xl font-bold text-center text-zorro-red">Iniciar Sesión</h1>
+    </div>
+
+    <form th:action="@{/login}" method="post" class="space-y-4">
+        <!-- Campo Usuario -->
+        <div>
+            <label for="username" class="block text-sm font-medium mb-1 text-gray-700">Usuario</label>
+            <input type="text" id="username" name="username" required
+                   class="w-full px-4 py-2 bg-white rounded-lg border border-zorro-brown
+                              focus:outline-none focus:ring-2 focus:ring-zorro-yellow text-gray-800">
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div>
+            <label for="password" class="block text-sm font-medium mb-1 text-gray-700">Contraseña</label>
+            <input type="password" id="password" name="password" required
+                   class="w-full px-4 py-2 bg-white rounded-lg border border-zorro-brown
+                              focus:outline-none focus:ring-2 focus:ring-zorro-yellow text-gray-800">
+        </div>
+
+        <!-- Botón de Login -->
+        <div class="text-center">
+            <button type="submit"
+                    class="w-full bg-zorro-yellow hover:bg-yellow-500 text-zorro-red font-bold
+                               py-2 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg">
+                Ingresar al Sistema
+            </button>
+        </div>
+
+        <!-- Mensajes de Error/Logout -->
+        <div th:if="${param.error}" class="text-red-500 text-sm text-center mt-2">
+            Usuario o contraseña incorrectos.
+        </div>
+        <div th:if="${param.logout}" class="text-green-600 text-sm text-center mt-2">
+            Has cerrado sesión correctamente.
+        </div>
+    </form>
+</div>
+</body>
+</html>
