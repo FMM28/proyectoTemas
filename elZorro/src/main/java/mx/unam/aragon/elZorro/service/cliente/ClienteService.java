@@ -9,4 +9,6 @@ public interface ClienteService {
     List<ClienteEntity> findAll();
     void deleteById(Long id);
     ClienteEntity findById(Long id);
+    long count();
+    boolean existsById(Long id);
 }

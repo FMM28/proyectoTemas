@@ -2,6 +2,11 @@ DROP DATABASE IF EXISTS el_zorro;
 CREATE DATABASE el_zorro;
 USE el_zorro;
 
+DROP USER IF EXISTS 'elzorro'@'localhost';
+CREATE USER 'elzorro'@'localhost' IDENTIFIED BY '1234';
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON el_zorro.* TO 'elzorro'@'localhost';
+FLUSH PRIVILEGES;
+
 CREATE TABLE rol(
   rol_id INT PRIMARY KEY AUTO_INCREMENT,
   nombre VARCHAR(10) NOT NULL

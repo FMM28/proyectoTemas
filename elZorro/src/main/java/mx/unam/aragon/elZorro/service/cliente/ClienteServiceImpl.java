@@ -37,4 +37,12 @@ public class ClienteServiceImpl implements ClienteService {
         Optional<ClienteEntity> cliente = clienteRepository.findById(id);
         return cliente.orElse(null);
     }
+
+    @Override
+    public long count() {
+        return clienteRepository.count();
+    }
+
+    @Override
+    public boolean existsById(Long id) {return clienteRepository.existsById(id);}
 }

@@ -1,42 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar Sesión</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
-<div class="bg-gray-800 rounded-2xl shadow-lg p-8 w-full max-w-md">
-    <h1 class="text-3xl font-bold mb-6 text-center">Iniciar Sesión</h1>
-
-    <form th:action="@{/login}" method="post" class="space-y-4">
-        <div>
-            <label for="username" class="block text-sm font-medium mb-1">Usuario</label>
-            <input type="text" id="username" name="username" required
-                   class="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(content=~{::section}, title='Iniciar Sesión')}">
+<body>
+<section class="flex items-center justify-center min-h-[calc(100vh-160px)]">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-zorro-yellow">
+        <!-- Logo y Título -->
+        <div class="flex flex-col items-center mb-6">
+            <img th:src="@{/img/logo-zorro.gif}" alt="Logo El Zorro" class="h-32 mb-4">
+            <h1 class="text-3xl font-bold text-center text-zorro-red">Iniciar Sesión</h1>
         </div>
 
-        <div>
-            <label for="password" class="block text-sm font-medium mb-1">Contraseña</label>
-            <input type="password" id="password" name="password" required
-                   class="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
+        <form th:action="@{/login}" method="post" class="space-y-4">
+            <!-- Campo Usuario -->
+            <div>
+                <label for="username" class="block text-sm font-medium mb-1 text-gray-700">Usuario</label>
+                <input type="text" id="username" name="username" required
+                       class="w-full px-4 py-2 bg-white rounded-lg border border-zorro-brown
+                                  focus:outline-none focus:ring-2 focus:ring-zorro-yellow text-gray-800">
+            </div>
 
-        <div class="text-center">
-            <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                Iniciar sesión
-            </button>
-        </div>
+            <!-- Campo Contraseña -->
+            <div>
+                <label for="password" class="block text-sm font-medium mb-1 text-gray-700">Contraseña</label>
+                <input type="password" id="password" name="password" required
+                       class="w-full px-4 py-2 bg-white rounded-lg border border-zorro-brown
+                                  focus:outline-none focus:ring-2 focus:ring-zorro-yellow text-gray-800">
+            </div>
 
-        <div th:if="${param.error}" class="text-red-500 text-sm text-center">
-            Usuario o contraseña incorrectos.
-        </div>
+            <!-- Botón de Login -->
+            <div class="text-center">
+                <button type="submit"
+                        class="w-full bg-zorro-yellow hover:bg-yellow-500 text-zorro-red font-bold
+                                   py-2 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg">
+                    Ingresar al Sistema
+                </button>
+            </div>
 
-        <div th:if="${param.logout}" class="text-green-500 text-sm text-center">
-            Has cerrado sesión correctamente.
-        </div>
-    </form>
-</div>
+            <!-- Mensajes de Error/Logout -->
+            <div th:if="${param.error}" class="text-red-500 text-sm text-center mt-2">
+                Usuario o contraseña incorrectos.
+            </div>
+            <div th:if="${param.logout}" class="text-green-600 text-sm text-center mt-2">
+                Has cerrado sesión correctamente.
+            </div>
+        </form>
+    </div>
+</section>
 </body>
 </html>
