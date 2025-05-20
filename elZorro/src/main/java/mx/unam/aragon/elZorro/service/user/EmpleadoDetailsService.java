@@ -22,13 +22,14 @@ public class EmpleadoDetailsService implements UserDetailsService {
         EmpleadoEntity empleado = empleadoRepository.findByUsuario(username);
 
         if (empleado == null) {
-            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+            System.out.println("Usuario NO encontrado");
+            throw new UsernameNotFoundException("Usuario no encontrado");
         }
 
         return User.withUsername(empleado.getUsuario())
                 .password(empleado.getPassword())
-                .roles("ADMIN")
-                .authorities("ROLE_ADMIN")
+                .roles(empleado.getRol().getNombre())
+                .authorities("ROLE_"+empleado.getRol().getNombre())
                 .build();
     }
 }

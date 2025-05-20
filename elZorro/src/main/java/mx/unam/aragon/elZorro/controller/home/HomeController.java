@@ -12,8 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/home")
-    public String home() {
-        return "home";
+    @GetMapping("/administracion")
+    public String administracion() {
+        return "admin/administracion";
+    }
+
+    @PreAuthorize("hasRole('CAJA')")
+    @GetMapping("/caja")
+    public String caja() {
+        return "caja/caja";
     }
 }

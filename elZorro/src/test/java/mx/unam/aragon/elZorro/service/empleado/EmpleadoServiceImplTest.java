@@ -19,8 +19,8 @@ class EmpleadoServiceImplTest {
     void crearEmpleado() {
 
 
-        RolEntity rol = rolService.findById(1L);
+        RolEntity rol = rolService.findById(2L);
 
-        empleadoService.crearEmpleado("root","root","root","root","1234",rol);
+        empleadoService.crearEmpleado("caja1","caja1","caja1","caja1","1234",rol);
     }
 }
