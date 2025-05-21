@@ -17,9 +17,5 @@ public class HomeController {
         return "admin/administracion";
     }
 
-    @PreAuthorize("hasRole('CAJA')")
-    @GetMapping("/caja")
-    public String caja() {
-        return "caja/caja";
-    }
+
 }

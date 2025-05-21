@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{common/head :: head}"></head>
+<body class="bg-grayLight min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<div th:replace="~{common/navbar :: navbar}"></div>
+
+<!-- Layout principal -->
+<div class="flex flex-grow">
+    <!-- Sidebar -->
+    <div th:replace="~{common/sidebar :: sidebar}"></div>
+
+    <!-- Contenido principal dinámico -->
+    <main class="ml-56 mt-16 p-6 w-full">
+        <div th:replace="~{${mainContent}}"></div>
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{common/footer :: footer}"></div>
+
+</body>
+</html>

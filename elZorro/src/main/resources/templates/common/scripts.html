@@ -1,0 +1,18 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="tailwindScripts">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zorroRed: '#e20e1c',
+                        zorroDark: '#a0101c',
+                        grayLight: '#f2f2f2',
+                        black: '#1b1b1b'
+                    }
+                }
+            }
+        }
+    </script>
+</div>
