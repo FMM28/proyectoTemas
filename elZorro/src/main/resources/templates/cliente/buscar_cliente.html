@@ -1,0 +1,86 @@
+<!-- templates/cliente/buscar_cliente.html -->
+<div th:fragment="content" class="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8 bg-gray-50">
+    <div class="w-11/12 max-w-4xl px-6 sm:px-10 py-10 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-zorroRed mb-10">Buscar Cliente</h2>
+
+        <!-- Mensajes -->
+        <div th:if="${exito}" class="bg-green-50 border border-green-400 text-green-800 px-6 py-4 rounded-xl mb-8 text-center">
+            <i class="fas fa-check-circle mr-2"></i> <span th:text="${exito}"></span>
+        </div>
+
+        <div th:if="${error}" class="bg-red-50 border border-red-400 text-red-800 px-6 py-4 rounded-xl mb-8 text-center">
+            <i class="fas fa-exclamation-circle mr-2"></i> <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{buscar-cliente}" method="post" class="space-y-6">
+            <!-- Campo Correo -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-semibold">Correo Electrónico</label>
+                <input type="email" name="correo"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. cliente@ejemplo.com"
+                       th:value="${param.correo}">
+            </div>
+
+            <div class="text-center text-gray-500 font-medium">— O —</div>
+
+            <!-- Campo Teléfono -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-semibold">Teléfono</label>
+                <input type="tel" name="telefono"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. 5512345678"
+                       th:value="${param.telefono}">
+            </div>
+
+            <!-- Botón de Buscar -->
+            <div class="pt-6">
+                <button type="submit"
+                        class="w-full bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-all duration-200 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed">
+                    <i class="fas fa-search mr-2"></i> Buscar Cliente
+                </button>
+            </div>
+        </form>
+
+        <!-- Resultados -->
+        <div th:if="${clienteEncontrado}" class="mt-12 border-t pt-8">
+            <h3 class="text-2xl font-bold text-zorroDark mb-6 text-center">Información del Cliente</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 px-2 sm:px-4">
+                <div>
+                    <p class="text-gray-600 font-medium">Nombre:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${clienteEncontrado.nombre + ' ' + clienteEncontrado.apellidoPaterno + ' ' + clienteEncontrado.apellidoMaterno}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Teléfono:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${clienteEncontrado.telefono}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Correo:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${clienteEncontrado.correo}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">ID Cliente:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${clienteEncontrado.id}"></p>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+                <a th:href="@{/caja/editar-cliente/} + ${clienteEncontrado.id}"
+                   class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-all duration-200 text-base font-medium shadow">
+                    <i class="fas fa-edit mr-2"></i> Editar Cliente
+                </a>
+
+                <form th:action="@{/caja/eliminar-cliente}" method="post"
+                      onsubmit="return confirm('¿Estás segura de que deseas eliminar este cliente? Esta acción no se puede deshacer.');">
+                    <input type="hidden" name="id" th:value="${clienteEncontrado.id}" />
+                    <button type="submit"
+                            class="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 text-base font-medium shadow">
+                        <i class="fas fa-trash-alt mr-2"></i> Eliminar Cliente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

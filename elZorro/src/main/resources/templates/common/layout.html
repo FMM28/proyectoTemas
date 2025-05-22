@@ -8,11 +8,17 @@
 
 <!-- Layout principal -->
 <div class="flex flex-grow">
-    <!-- Sidebar -->
-    <div th:replace="~{common/sidebar :: sidebar}"></div>
+    <!-- Sidebar dinámico según el rol -->
+    <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <div th:replace="~{common/sidebar_admin :: sidebar}"></div>
+    </div>
 
-    <!-- Contenido principal dinámico -->
-    <main class="ml-56 mt-16 p-6 w-full">
+    <div th:if="${#authorization.expression('hasRole(''CAJA'')')}">
+        <div th:replace="~{common/sidebar_caja :: sidebar}"></div>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="ml-56 mt-16 p-6 flex-grow">
         <div th:replace="~{${mainContent}}"></div>
     </main>
 </div>

@@ -1,0 +1,77 @@
+<!-- templates/``_cliente.html -->
+<div th:fragment="content" class="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8">
+    <div class="w-4/5 max-w-4xl px-8 py-10 bg-white rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-zorroRed mb-8">Editar Cliente</h2>
+
+        <!-- Mensaje de éxito -->
+        <div th:if="${param.exito}" class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg mb-8 text-center">
+            <i class="fas fa-check-circle mr-2"></i> Cliente actualizado exitosamente!
+        </div>
+
+        <form th:action="@{/caja/actualizar-cliente/} + ${cliente.id}"
+              th:object="${cliente}"
+              method="post"
+              class="space-y-6 px-6">
+
+            <!-- ID (solo visualización) -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">ID Cliente</label>
+                <input type="text" th:value="${cliente.id}" class="w-full border-0 px-5 py-3 bg-gray-100 rounded-xl" readonly>
+            </div>
+
+            <!-- Campo Nombre -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">Nombre(s)</label>
+                <input type="text" th:field="*{nombre}"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. Juan Carlos">
+                <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('nombre')}"
+                       th:errors="*{nombre}"></small>
+            </div>
+
+            <!-- Campo Apellido Paterno -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">Apellido Paterno</label>
+                <input type="text" th:field="*{apellidoPaterno}"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. Pérez">
+            </div>
+
+            <!-- Campo Apellido Materno -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">Apellido Materno</label>
+                <input type="text" th:field="*{apellidoMaterno}"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. López">
+            </div>
+
+            <!-- Campo Teléfono -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">Teléfono</label>
+                <input type="tel" th:field="*{telefono}"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. 5512345678">
+            </div>
+
+            <!-- Campo Correo -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">Correo Electrónico</label>
+                <input type="email" th:field="*{correo}"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. cliente@ejemplo.com">
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-between pt-6">
+                <a th:href="@{/caja/buscar-cliente}"
+                   class="bg-gray-500 text-white px-8 py-3 rounded-xl hover:bg-gray-600 transition-colors font-medium text-lg">
+                    <i class="fas fa-arrow-left mr-2"></i> Regresar
+                </a>
+                <button type="submit"
+                        class="bg-zorroRed text-white px-8 py-3 rounded-xl hover:bg-zorroDark transition-colors font-medium text-lg">
+                    <i class="fas fa-save mr-2"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

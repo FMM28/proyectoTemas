@@ -33,9 +33,8 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public ClienteEntity findById(Long id) {
-        Optional<ClienteEntity> cliente = clienteRepository.findById(id);
-        return cliente.orElse(null);
+    public Optional<ClienteEntity> findById(Long id) {
+        return clienteRepository.findById(id);
     }
 
     @Override
@@ -45,4 +44,14 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public boolean existsById(Long id) {return clienteRepository.existsById(id);}
+
+    @Override
+    public Optional<ClienteEntity> findByCorreo(String correo) {
+        return clienteRepository.findByCorreo(correo);
+    }
+
+    @Override
+    public Optional<ClienteEntity> findByTelefono(String telefono) {
+        return clienteRepository.findByTelefono(telefono);
+    }
 }

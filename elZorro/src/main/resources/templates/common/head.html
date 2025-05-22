@@ -4,19 +4,5 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Zorro Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        zorroRed: '#e20e1c',
-                        zorroDark: '#a0101c',
-                        grayLight: '#f2f2f2',
-                        black: '#1b1b1b'
-                    }
-                }
-            }
-        }
-    </script>
+    <script th:replace="~{common/scripts :: tailwindScripts}"></script>
 </head>

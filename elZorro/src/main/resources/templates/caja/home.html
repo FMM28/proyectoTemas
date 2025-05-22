@@ -1,4 +1,27 @@
-<div th:fragment="content">
-    <h1 class="text-2xl font-semibold mb-4">Bienvenido a Zorro App</h1>
-    <p class="text-gray-700">Este es el panel principal. Aquí irá tu contenido.</p>
+<div th:fragment="content" class="space-y-6">
+    <!-- Bienvenida -->
+    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+        <h1 class="text-3xl font-bold text-zorroRed mb-2">¡Bienvenida a Zorro App!</h1>
+        <p class="text-gray-700 text-lg">Aquí puedes gestionar tus actividades de forma rápida, sencilla y organizada.</p>
+    </div>
+
+    <!-- Tarjeta de resumen o actividad -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Panel de actividad -->
+        <div class="bg-gradient-to-r from-zorroRed via-rose-300 to-pink-200 text-white rounded-xl p-5 shadow-lg">
+            <h2 class="text-xl font-semibold mb-2">Resumen de Actividad</h2>
+            <ul class="list-disc pl-5 space-y-1 text-sm">
+                <li>Ventas recientes: <span class="font-bold">12</span></li>
+                <li>Corte pendiente: <span class="text-yellow-200">Sí</span></li>
+            </ul>
+        </div>
+
+        <!-- Mensaje del día o detalle entretenido -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+            <h2 class="text-lg font-semibold text-zorroRed mb-2">🌸 Tip del día</h2>
+            <p class="text-gray-700 italic">Organiza tus clientes frecuentes con etiquetas para encontrarlos más rápido.</p>
+            <hr class="my-3">
+            <p class="text-sm text-gray-500">¿Sabías que...? Puedes personalizar tu panel para trabajar más cómoda.</p>
+        </div>
+    </div>
 </div>
