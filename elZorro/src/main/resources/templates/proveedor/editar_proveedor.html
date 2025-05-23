@@ -1,0 +1,91 @@
+<div th:fragment="content" class="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8 bg-gray-50">
+    <div class="w-11/12 max-w-4xl px-6 sm:px-10 py-10 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-zorroRed mb-10">Editar Proveedor</h2>
+
+        <!-- Mensajes -->
+        <div th:if="${error}" class="bg-red-50 border border-red-400 text-red-800 px-6 py-4 rounded-xl mb-8 text-center">
+            <i class="fas fa-exclamation-circle mr-2"></i> <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/administracion/editar-proveedor/} + ${proveedor.id}" method="post" th:object="${proveedor}" class="space-y-6">
+            <!-- Campos del formulario -->
+            <div>
+                <label class="block font-medium text-gray-700">Razón Social</label>
+                <input type="text" th:field="*{razonSocial}" class="w-full input" required />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-medium text-gray-700">RFC</label>
+                    <input type="text" th:field="*{rfc}" class="w-full input" required />
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700">Código Postal</label>
+                    <input type="text" th:field="*{codigoPostal}" class="w-full input" required />
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-medium text-gray-700">Dirección</label>
+                <input type="text" th:field="*{direccion}" class="w-full input" required />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-medium text-gray-700">Régimen Fiscal</label>
+                    <select th:field="*{regimenFiscal}" class="w-full input" required>
+                        <option value="">Seleccione un régimen...</option>
+                        <option value="_601">601 - Régimen General de Ley Personas Morales</option>
+                        <option value="_603">603 - Personas Morales con Fines no Lucrativos</option>
+                        <option value="_605">605 - Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+                        <option value="_606">606 - Régimen de Arrendamiento</option>
+                        <option value="_612">612 - Régimen de las Personas Físicas con Actividades Empresariales y Profesionales</option>
+                        <option value="_621">621 - Régimen de Incorporación Fiscal</option>
+                        <option value="_625">625 - Régimen de las Actividades Empresariales con Ingresos a Través de Plataformas Tecnológicas</option>
+                        <option value="_626">626 - Régimen Simplificado de Confianza</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700">Correo Electrónico</label>
+                    <input type="email" th:field="*{correo}" class="w-full input" required />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-medium text-gray-700">Teléfono</label>
+                    <input type="text" th:field="*{telefono}" class="w-full input" required />
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700">Nombre del Contacto</label>
+                    <input type="text" th:field="*{contactoNombre}" class="w-full input" />
+                </div>
+            </div>
+
+            <!-- Nuevo campo para Estatus -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-medium text-gray-700">Estatus</label>
+                    <select th:field="*{estatus}" class="w-full input" required>
+                        <option th:each="estado : ${T(mx.unam.aragon.elZorro.model.enums.EstatusProveedor).values()}"
+                                th:value="${estado}"
+                                th:text="${estado.name()}"></option>
+                    </select>
+                </div>
+                <div>
+                    <!-- Espacio reservado para alinear correctamente -->
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 pt-6">
+                <button type="submit" class="w-full bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-colors font-medium text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed">
+                    <i class="fas fa-save mr-2"></i> Guardar Cambios
+                </button>
+                <a th:href="@{/administracion/buscar-proveedor}" class="w-full bg-gray-500 text-white px-8 py-4 rounded-xl hover:bg-gray-600 transition-colors font-medium text-lg text-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <i class="fas fa-times mr-2"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

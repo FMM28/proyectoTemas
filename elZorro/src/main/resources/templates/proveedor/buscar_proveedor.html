@@ -1,0 +1,129 @@
+<!-- templates/proveedor/buscar_proveedor.html -->
+<div th:fragment="content" class="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8 bg-gray-50">
+    <div class="w-11/12 max-w-4xl px-6 sm:px-10 py-10 bg-white rounded-2xl shadow-xl border border-gray-100">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-zorroRed mb-10">Buscar Proveedor</h2>
+
+        <!-- Mensajes -->
+        <div th:if="${exito}" class="bg-green-50 border border-green-400 text-green-800 px-6 py-4 rounded-xl mb-8 text-center">
+            <i class="fas fa-check-circle mr-2"></i> <span th:text="${exito}"></span>
+        </div>
+
+        <div th:if="${error}" class="bg-red-50 border border-red-400 text-red-800 px-6 py-4 rounded-xl mb-8 text-center">
+            <i class="fas fa-exclamation-circle mr-2"></i> <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/administracion/buscar-proveedor}" method="post" class="space-y-6">
+            <!-- Campo RFC -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-semibold">RFC</label>
+                <input type="text" name="rfc"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. ZOR123456789"
+                       th:value="${param.rfc}">
+            </div>
+
+            <div class="text-center text-gray-500 font-medium">— O —</div>
+
+            <!-- Campo Razón Social -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-semibold">Razón Social</label>
+                <input type="text" name="razonSocial"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. Constructora El Zorro S.A. de C.V."
+                       th:value="${param.razonSocial}">
+            </div>
+
+            <div class="text-center text-gray-500 font-medium">— O —</div>
+
+            <!-- Campo Correo -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-semibold">Correo Electrónico</label>
+                <input type="email" name="correo"
+                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                       placeholder="Ej. proveedor@empresa.com"
+                       th:value="${param.correo}">
+            </div>
+
+            <!-- Botón de Buscar -->
+            <div class="pt-6">
+                <button type="submit"
+                        class="w-full bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-all duration-200 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed">
+                    <i class="fas fa-search mr-2"></i> Buscar Proveedor
+                </button>
+            </div>
+        </form>
+
+        <!-- Resultados -->
+        <div th:if="${proveedorEncontrado}" class="mt-12 border-t pt-8">
+            <h3 class="text-2xl font-bold text-zorroDark mb-6 text-center">Información del Proveedor</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 px-2 sm:px-4">
+                <div>
+                    <p class="text-gray-600 font-medium">Razón Social:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.razonSocial}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">RFC:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.rfc}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Dirección:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.direccion}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Código Postal:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.codigoPostal}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Régimen Fiscal:</p>
+                    <p class="text-gray-800 font-semibold text-lg">
+                        <span th:switch="${proveedorEncontrado.regimenFiscal.name()}">
+                        <span th:case="'_601'">601 - Régimen General de Ley Personas Morales</span>
+                        <span th:case="'_603'">603 - Personas Morales con Fines no Lucrativos</span>
+                        <span th:case="'_605'">605 - Régimen de Sueldos y Salarios e Ingresos Asimilados a Salarios</span>
+                        <span th:case="'_606'">606 - Régimen de Arrendamiento</span>
+                        <span th:case="'_612'">612 - Régimen de las Personas Físicas con Actividades Empresariales y Profesionales</span>
+                        <span th:case="'_621'">621 - Régimen de Incorporación Fiscal</span>
+                        <span th:case="'_625'">625 - Régimen de las Actividades Empresariales con Ingresos a Través de Plataformas Tecnológicas</span>
+                        <span th:case="'_626'">626 - Régimen Simplificado de Confianza</span>
+                        <span th:case="*">Desconocido (<span th:text="${proveedorEncontrado.regimenFiscal}"></span>)</span>
+                    </span>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Correo:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.correo}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Teléfono:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.telefono}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Contacto:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.contactoNombre}"></p>
+                </div>
+                <div>
+                    <p class="text-gray-600 font-medium">Estatus:</p>
+                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.estatus}"></p>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+                <a th:href="@{/administracion/editar-proveedor/} + ${proveedorEncontrado.id}"
+                   class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-all duration-200 text-base font-medium shadow">
+                    <i class="fas fa-edit mr-2"></i> Editar Proveedor
+                </a>
+
+                <form th:action="@{/administracion/eliminar-proveedor}" method="post"
+                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar permanentemente este proveedor?');">
+                    <input type="hidden" name="id" th:value="${proveedorEncontrado.id}" />
+                    <button type="submit"
+                            class="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 text-base font-medium shadow">
+                        <i class="fas fa-trash-alt mr-2"></i> Eliminar Proveedor
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

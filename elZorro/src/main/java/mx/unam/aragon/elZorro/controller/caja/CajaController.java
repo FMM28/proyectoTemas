@@ -118,4 +118,10 @@ public class CajaController {
         clienteService.save(cliente);
         return "redirect:/caja/editar-cliente/" + id + "?exito=true";
     }
+
+    @RequestMapping("/nueva-venta")
+    public String nueva_venta(Model model) {
+        model.addAttribute("mainContent", "caja/ventas/nueva-venta");
+        return "common/layout";
+    }
 }

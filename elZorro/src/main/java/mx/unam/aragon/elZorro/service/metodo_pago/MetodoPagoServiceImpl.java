@@ -37,4 +37,10 @@ public class MetodoPagoServiceImpl implements MetodoPagoService {
         Optional<MetodoPagoEntity> metodoPago = metodoPagoRepository.findById(id);
         return metodoPago.orElse(null);
     }
+
+    @Override
+    public MetodoPagoEntity crearMetodo(String nombre){
+        MetodoPagoEntity metodoPago = MetodoPagoEntity.builder().nombre(nombre).build();
+        return metodoPagoRepository.save(metodoPago);
+    }
 }

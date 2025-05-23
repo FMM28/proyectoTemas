@@ -9,4 +9,5 @@ public interface MetodoPagoService {
     List<MetodoPagoEntity> findAll();
     void deleteById(Long id);
     MetodoPagoEntity findById(Long id);
+    public MetodoPagoEntity crearMetodo(String nombre);
 }

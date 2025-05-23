@@ -1,10 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- templates/proveedor/alta_proveedor.html -->
+<div th:fragment="content" class="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8">
+    <div class="w-4/5 max-w-6xl px-8 py-10 bg-white rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-zorroRed mb-8">Registro de Proveedor</h2>
 
-</body>
-</html>
+        <!-- Mensaje de éxito -->
+        <div th:if="${param.exito}" class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg mb-8 text-center text-sm">
+            <i class="fas fa-check-circle mr-2"></i> Proveedor registrado exitosamente!
+        </div>
+
+        <!-- Mensaje de error -->
+        <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg mb-8 text-center text-sm">
+            <i class="fas fa-exclamation-triangle mr-2"></i> <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/administracion/alta-proveedor}" th:object="${proveedor}" method="post" class="space-y-6 px-6">
+            <!-- Información básica del proveedor -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Columna izquierda -->
+                <div class="space-y-5">
+                    <!-- Campo Razón Social -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">Razón Social</label>
+                        <input type="text" th:field="*{razonSocial}"
+                               class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                               placeholder="Ej. Empresa S.A. de C.V.">
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('razonSocial')}"
+                               th:errors="*{razonSocial}"></small>
+                    </div>
+
+                    <!-- Campo RFC -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">RFC</label>
+                        <input type="text" th:field="*{rfc}"
+                               class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                               placeholder="Ej. ABC123456ABC"
+                               style="text-transform: uppercase;">
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('rfc')}"
+                               th:errors="*{rfc}"></small>
+                    </div>
+
+                    <!-- Campo Código Postal -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">Código Postal</label>
+                        <input type="text" th:field="*{codigoPostal}"
+                               class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                               placeholder="Ej. 12345"
+                               maxlength="5">
+                    </div>
+
+                    <!-- Campo Teléfono -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">Teléfono</label>
+                        <input type="tel" th:field="*{telefono}"
+                               class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                               placeholder="Ej. 5512345678">
+                    </div>
+                </div>
+
+                <!-- Columna derecha -->
+                <div class="space-y-5">
+                    <!-- Campo Dirección -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">Dirección</label>
+                        <textarea th:field="*{direccion}" rows="3"
+                                  class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent resize-none"
+                                  placeholder="Ej. Calle Principal #123, Col. Centro"></textarea>
+                    </div>
+
+                    <!-- Campo Correo -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">Correo Electrónico</label>
+                        <input type="email" th:field="*{correo}"
+                               class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                               placeholder="Ej. contacto@empresa.com">
+                    </div>
+
+                    <!-- Campo Nombre de Contacto -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-base font-medium">Nombre de Contacto</label>
+                        <input type="text" th:field="*{contactoNombre}"
+                               class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                               placeholder="Ej. Juan Pérez García">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo Régimen Fiscal (ancho completo) -->
+            <div class="space-y-2">
+                <label class="block text-gray-700 text-base font-medium">Régimen Fiscal</label>
+                <select th:field="*{regimenFiscal}"
+                        class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent">
+                    <option value="">Seleccione un régimen fiscal</option>
+                    <option value="_601">601 - RÉGIMEN GENERAL DE LEY PERSONAS MORALES</option>
+                    <option value="_603">603 - PERSONAS MORALES CON FINES NO LUCRATIVOS</option>
+                    <option value="_605">605 - RÉGIMEN DE SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS</option>
+                    <option value="_606">606 - RÉGIMEN DE ARRENDAMIENTO</option>
+                    <option value="_612">612 - RÉGIMEN DE LAS PERSONAS FÍSICAS CON ACTIVIDADES EMPRESARIALES Y PROFESIONALES</option>
+                    <option value="_621">621 - RÉGIMEN DE INCORPORACIÓN FISCAL</option>
+                    <option value="_625">625 - RÉGIMEN DE LAS ACTIVIDADES EMPRESARIALES CON INGRESOS A TRAVÉS DE PLATAFORMAS TECNOLÓGICAS</option>
+                    <option value="_626">626 - RÉGIMEN SIMPLIFICADO DE CONFIANZA</option>
+                </select>
+                <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('regimenFiscal')}"
+                       th:errors="*{regimenFiscal}"></small>
+            </div>
+
+            <!-- Botón de Submit -->
+            <div class="pt-6">
+                <button type="submit"
+                        class="w-full bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-colors font-medium text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed">
+                    <i class="fas fa-save mr-2"></i> Registrar Proveedor
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

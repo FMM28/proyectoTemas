@@ -37,4 +37,22 @@ public class ProveedorServiceImpl implements ProveedorService {
         Optional<ProveedorEntity> proveedor = proveedorRepository.findById(id);
         return proveedor.orElse(null);
     }
+
+    @Override
+    public ProveedorEntity findByCorreo(String correo) {
+        Optional<ProveedorEntity> proveedor = proveedorRepository.findByCorreo(correo);
+        return proveedor.orElse(null);
+    }
+
+    @Override
+    public ProveedorEntity findByRfc(String rfc) {
+        Optional<ProveedorEntity> proveedor = proveedorRepository.findByRfc(rfc);
+        return proveedor.orElse(null);
+    }
+
+    @Override
+    public ProveedorEntity findByRazonSocialContainingIgnoreCase(String razonSocial) {
+        Optional<ProveedorEntity> proveedor = proveedorRepository.findByRazonSocialContainingIgnoreCase(razonSocial);
+        return proveedor.orElse(null);
+    }
 }
