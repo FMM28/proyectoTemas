@@ -52,7 +52,8 @@ public class AltaProductoController {
     public String procesarAltaProducto(
             @Valid @ModelAttribute("producto") ProductoEntity producto,
             BindingResult result,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
 
         // Validar la imagen
         if (producto.getImagenFile() != null && !producto.getImagenFile().isEmpty()) {
@@ -65,9 +66,11 @@ public class AltaProductoController {
         }
 
         if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.producto", result);
-            redirectAttributes.addFlashAttribute("producto", producto);
-            return "redirect:/administracion/inventario/producto/alta";
+            // Si hay errores, mostrar el formulario nuevamente con los mensajes
+            model.addAttribute("categorias", categoriaService.findAll());
+            model.addAttribute("proveedores", proveedorService.findAll());
+            model.addAttribute("mainContent", "inventario/alta_producto");
+            return "common/layout";
         }
 
         try {
@@ -78,12 +81,15 @@ public class AltaProductoController {
             }
 
             productoService.save(producto);
+            // Redirigir al listado con mensaje de éxito
             redirectAttributes.addFlashAttribute("success", "Producto registrado exitosamente");
+            return "redirect:/administracion/inventario/producto/lista";
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("error", "Error al guardar la imagen");
-            redirectAttributes.addFlashAttribute("producto", producto);
+            model.addAttribute("error", "Error al guardar la imagen");
+            model.addAttribute("categorias", categoriaService.findAll());
+            model.addAttribute("proveedores", proveedorService.findAll());
+            model.addAttribute("mainContent", "inventario/alta_producto");
+            return "common/layout";
         }
-
-        return "redirect:/administracion/inventario/producto/alta";
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 @RequestMapping("/administracion/inventario/producto")
@@ -26,6 +28,7 @@ public class ProductoBusquedaController {
     public String listarProductos(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) String success,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("nombre").ascending());
@@ -43,6 +46,11 @@ public class ProductoBusquedaController {
         model.addAttribute("totalProductos", productoPage.getTotalElements());
         model.addAttribute("pageSize", PAGE_SIZE);
 
+        // Añadir mensaje de éxito si existe
+        if (success != null) {
+            model.addAttribute("success", success);
+        }
+
         model.addAttribute("mainContent", "inventario/listado_Productos");
         return "common/layout";
     }
@@ -50,7 +58,6 @@ public class ProductoBusquedaController {
     @GetMapping("/detalle/{id}")
     public String verDetalleProducto(@PathVariable Long id, Model model) {
         ProductoEntity producto = productoService.findById(id);
-        System.out.println(producto);
         model.addAttribute("producto", producto);
         model.addAttribute("mainContent", "inventario/detalle_producto");
         return "common/layout";
