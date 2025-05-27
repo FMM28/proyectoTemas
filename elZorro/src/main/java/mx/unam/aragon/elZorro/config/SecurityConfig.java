@@ -48,7 +48,8 @@ public class SecurityConfig {
                                 "/error",
                                 "/css/**",
                                 "/js/**",
-                                "/img/**"
+                                "/img/**",
+                                "/uploads/productos**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

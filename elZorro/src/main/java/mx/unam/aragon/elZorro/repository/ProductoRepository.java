@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductoRepository extends JpaRepository<ProductoEntity,Long> {
     @Query(value = """
@@ -23,4 +25,5 @@ public interface ProductoRepository extends JpaRepository<ProductoEntity,Long> {
     JOIN proveedor pv ON p.proveedor_id = pv.proveedor_id
     """, nativeQuery = true)
     List<Inventario> getInventario();
+    Page<ProductoEntity> findByNombreContainingIgnoreCase(String nombre, Pageable pageable);
 }

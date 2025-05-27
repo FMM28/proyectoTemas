@@ -1,0 +1,45 @@
+<div th:fragment="alta-categoria-form" class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-zorroDark mb-6">Alta de Categoría</h2>
+
+    <form th:action="@{/administracion/inventario/categoria/alta}"
+          th:object="${categoria}"
+          method="post"
+          class="space-y-6">
+
+        <!-- Mensajes de error generales -->
+        <div th:if="${#fields.hasErrors('*')}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            <strong class="font-bold">Error!</strong>
+            <span class="block sm:inline">Por favor corrige los errores en el formulario.</span>
+        </div>
+
+        <!-- Mensajes flash -->
+        <div th:if="${success != null}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error != null}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Campo Nombre -->
+        <div>
+            <label for="nombre" class="block text-zorroDark font-medium mb-2">Nombre de la Categoría</label>
+            <input type="text" id="nombre" name="nombre" th:field="*{nombre}"
+                   class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                   placeholder="Ingrese el nombre de la categoría">
+            <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"
+                  class="text-red-600 text-sm mt-1"></span>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-end space-x-4">
+            <a th:href="@{/administracion/inventario/categoria/lista}"
+               class="bg-gray-300 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-400 transition-colors font-medium">
+                Cancelar
+            </a>
+            <button type="submit"
+                    class="bg-zorroRed text-white px-6 py-3 rounded-md hover:bg-zorroDark transition-colors font-medium">
+                Guardar Categoría
+            </button>
+        </div>
+    </form>
+</div>

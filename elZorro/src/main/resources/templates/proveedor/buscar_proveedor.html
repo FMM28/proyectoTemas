@@ -1,82 +1,130 @@
-<!-- templates/proveedor/buscar_proveedor.html -->
-<div th:fragment="content" class="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8 bg-gray-50">
-    <div class="w-11/12 max-w-4xl px-6 sm:px-10 py-10 bg-white rounded-2xl shadow-xl border border-gray-100">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-zorroRed mb-10">Buscar Proveedor</h2>
+<div th:fragment="buscar_proveedor">
+    <h1 class="text-3xl font-bold text-zorroDark mb-6">Buscar Proveedores</h1>
 
-        <!-- Mensajes -->
-        <div th:if="${exito}" class="bg-green-50 border border-green-400 text-green-800 px-6 py-4 rounded-xl mb-8 text-center">
-            <i class="fas fa-check-circle mr-2"></i> <span th:text="${exito}"></span>
-        </div>
+    <!-- Formulario de búsqueda -->
+    <div class="container mx-auto relative mb-8 bg-white p-6 rounded-lg shadow">
+        <a th:href="@{/administracion/proveedor/alta}"
+           class="bg-white text-zorroRed border border-zorroRed px-4 py-2 rounded-md hover:bg-zorroRed hover:text-white transition-colors font-medium">
+            Nuevo proveedor
+        </a>
+        <br><br>
 
-        <div th:if="${error}" class="bg-red-50 border border-red-400 text-red-800 px-6 py-4 rounded-xl mb-8 text-center">
-            <i class="fas fa-exclamation-circle mr-2"></i> <span th:text="${error}"></span>
-        </div>
+        <form id="search-form" method="post" th:action="@{/administracion/proveedor/buscar}" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Campo RFC -->
+                <div class="relative">
+                    <label class="block text-zorroDark font-medium mb-2">RFC</label>
+                    <input type="text" id="rfc" name="rfc" th:value="${param.rfc}"
+                           class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent autocomplete-field"
+                           data-suggestions-url="/administracion/proveedor/sugerencias/rfc"
+                           placeholder="Ingrese RFC completo o parcial"
+                           autocomplete="off">
+                    <div class="suggestions-dropdown hidden absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-60 overflow-auto"></div>
+                </div>
 
-        <form th:action="@{/administracion/buscar-proveedor}" method="post" class="space-y-6">
-            <!-- Campo RFC -->
-            <div class="space-y-2">
-                <label class="block text-gray-700 text-base font-semibold">RFC</label>
-                <input type="text" name="rfc"
-                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
-                       placeholder="Ej. ZOR123456789"
-                       th:value="${param.rfc}">
+                <!-- Campo Razón Social -->
+                <div class="relative">
+                    <label class="block text-zorroDark font-medium mb-2">Razón Social</label>
+                    <input type="text" id="razonSocial" name="razonSocial"
+                           th:value="${param.razonSocial}"
+                           class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent autocomplete-field"
+                           data-suggestions-url="/administracion/proveedor/sugerencias/razon-social"
+                           placeholder="Ingrese nombre completo o parcial"
+                           autocomplete="off">
+                    <div class="suggestions-dropdown hidden absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-60 overflow-auto"></div>
+                </div>
+
+                <!-- Campo Correo -->
+                <div class="relative">
+                    <label class="block text-zorroDark font-medium mb-2">Correo</label>
+                    <input type="text" id="correo" name="correo" th:value="${param.correo}"
+                           class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent autocomplete-field"
+                           data-suggestions-url="/administracion/proveedor/sugerencias/correo"
+                           placeholder="Ingrese correo completo o parcial"
+                           autocomplete="off">
+                    <div class="suggestions-dropdown hidden absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded shadow-lg max-h-60 overflow-auto"></div>
+                </div>
             </div>
 
-            <div class="text-center text-gray-500 font-medium">— O —</div>
-
-            <!-- Campo Razón Social -->
-            <div class="space-y-2">
-                <label class="block text-gray-700 text-base font-semibold">Razón Social</label>
-                <input type="text" name="razonSocial"
-                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
-                       placeholder="Ej. Constructora El Zorro S.A. de C.V."
-                       th:value="${param.razonSocial}">
-            </div>
-
-            <div class="text-center text-gray-500 font-medium">— O —</div>
-
-            <!-- Campo Correo -->
-            <div class="space-y-2">
-                <label class="block text-gray-700 text-base font-semibold">Correo Electrónico</label>
-                <input type="email" name="correo"
-                       class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
-                       placeholder="Ej. proveedor@empresa.com"
-                       th:value="${param.correo}">
-            </div>
-
-            <!-- Botón de Buscar -->
-            <div class="pt-6">
-                <button type="submit"
-                        class="w-full bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-all duration-200 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed">
-                    <i class="fas fa-search mr-2"></i> Buscar Proveedor
+            <div class="flex items-center space-x-4">
+                <button type="submit" class="bg-zorroRed text-white px-6 py-3 rounded-md hover:bg-zorroDark transition-colors font-medium">
+                    Buscar Proveedores
+                </button>
+                <button type="button" id="limpiar-form" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors font-medium">
+                    Limpiar
                 </button>
             </div>
+
+            <div class="text-sm text-gray-600 mt-2">
+                <p><strong>Tip:</strong> Puede usar múltiples criterios simultáneamente. La búsqueda es parcial, no necesita escribir el texto completo.</p>
+            </div>
         </form>
+    </div>
 
-        <!-- Resultados -->
-        <div th:if="${proveedorEncontrado}" class="mt-12 border-t pt-8">
-            <h3 class="text-2xl font-bold text-zorroDark mb-6 text-center">Información del Proveedor</h3>
+    <!-- Mensajes de error -->
+    <div th:if="${error}" class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 px-2 sm:px-4">
-                <div>
-                    <p class="text-gray-600 font-medium">Razón Social:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.razonSocial}"></p>
+    <!-- Mensaje informativo -->
+    <div th:if="${mensaje}" class="mb-6 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p th:text="${mensaje}"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTADO ÚNICO - Se mantiene igual -->
+    <div th:if="${proveedorEncontrado}" class="mt-8 border-t pt-8">
+        <div class="bg-grayLight p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div class="flex justify-between items-start mb-6">
+                <h3 class="text-xl font-semibold text-zorroDark">Proveedor encontrado</h3>
+                <div class="flex space-x-3">
+                    <a th:href="@{/administracion/proveedor/editar/{id}(id=${proveedorEncontrado.id})}"
+                       class="bg-white text-zorroRed border border-zorroRed px-4 py-2 rounded-md hover:bg-zorroRed hover:text-white transition-colors font-medium">
+                        Editar
+                    </a>
+                    <form th:action="@{/administracion/proveedor/eliminar}"
+                          method="post"
+                          onsubmit="return confirm('¿Estás seguro de eliminar este proveedor?');">
+                        <input type="hidden" name="id" th:value="${proveedorEncontrado.id}">
+                        <button type="submit"
+                                class="bg-zorroRed text-white px-4 py-2 rounded-md hover:bg-zorroDark transition-colors font-medium">
+                            Eliminar
+                        </button>
+                    </form>
                 </div>
-                <div>
-                    <p class="text-gray-600 font-medium">RFC:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.rfc}"></p>
-                </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Dirección:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.direccion}"></p>
-                </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Código Postal:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.codigoPostal}"></p>
-                </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Régimen Fiscal:</p>
-                    <p class="text-gray-800 font-semibold text-lg">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Columna Izquierda -->
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">RFC</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.rfc}"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Razón Social</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.razonSocial}"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Régimen Fiscal</p>
+                        <p class="text-gray-800 font-semibold text-lg">
                         <span th:switch="${proveedorEncontrado.regimenFiscal.name()}">
                         <span th:case="'_601'">601 - Régimen General de Ley Personas Morales</span>
                         <span th:case="'_603'">603 - Personas Morales con Fines no Lucrativos</span>
@@ -88,42 +136,337 @@
                         <span th:case="'_626'">626 - Régimen Simplificado de Confianza</span>
                         <span th:case="*">Desconocido (<span th:text="${proveedorEncontrado.regimenFiscal}"></span>)</span>
                     </span>
-                    </p>
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Correo:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.correo}"></p>
-                </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Teléfono:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.telefono}"></p>
-                </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Contacto:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.contactoNombre}"></p>
-                </div>
-                <div>
-                    <p class="text-gray-600 font-medium">Estatus:</p>
-                    <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.estatus}"></p>
+
+                <!-- Columna Derecha -->
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-500">Correo Electrónico</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.correo}"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Teléfono</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.telefono}"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Estatus</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.estatus}"></p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Botones de acción -->
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-                <a th:href="@{/administracion/editar-proveedor/} + ${proveedorEncontrado.id}"
-                   class="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-all duration-200 text-base font-medium shadow">
-                    <i class="fas fa-edit mr-2"></i> Editar Proveedor
-                </a>
-
-                <form th:action="@{/administracion/eliminar-proveedor}" method="post"
-                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar permanentemente este proveedor?');">
-                    <input type="hidden" name="id" th:value="${proveedorEncontrado.id}" />
-                    <button type="submit"
-                            class="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 text-base font-medium shadow">
-                        <i class="fas fa-trash-alt mr-2"></i> Eliminar Proveedor
-                    </button>
-                </form>
+            <!-- Información Adicional -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <h4 class="text-md font-medium text-zorroDark mb-3">Información Adicional</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-500">Dirección</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.direccion}"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Código Postal</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.codigoPostal}"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Persona de Contacto</p>
+                        <p class="text-gray-800 font-semibold text-lg" th:text="${proveedorEncontrado.contactoNombre}"></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- MÚLTIPLES RESULTADOS - NUEVO -->
+    <div th:if="${proveedoresEncontrados}" class="mt-8 border-t pt-8">
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-xl font-semibold text-zorroDark">Resultados de la búsqueda</h3>
+                <p class="text-sm text-gray-600 mt-1">Se encontraron <span th:text="${#lists.size(proveedoresEncontrados)}"></span> proveedores</p>
+            </div>
+
+            <!-- Tabla de resultados -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RFC</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Razón Social</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Correo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estatus</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tr th:each="proveedor, iterStat : ${proveedoresEncontrados}"
+                        th:class="${iterStat.even} ? 'bg-white' : 'bg-gray-50'"
+                        class="hover:bg-blue-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900" th:text="${proveedor.rfc}"></div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900" th:text="${proveedor.razonSocial}"></div>
+                            <div class="text-sm text-gray-500" th:text="${proveedor.contactoNombre}"></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900" th:text="${proveedor.correo}"></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900" th:text="${proveedor.telefono}"></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <span th:class="${proveedor.estatus.name() == 'ACTIVO'} ? 'inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800' : 'inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800'"
+                                      th:text="${proveedor.estatus}">
+                                </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex space-x-2">
+                                <button type="button"
+                                        class="text-blue-600 hover:text-blue-900 ver-detalle-btn"
+                                        th:data-proveedor-id="${proveedor.id}"
+                                        title="Ver detalles">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </button>
+                                <a th:href="@{/administracion/proveedor/editar/{id}(id=${proveedor.id})}"
+                                   class="text-zorroRed hover:text-zorroDark" title="Editar">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </a>
+                                <form th:action="@{/administracion/proveedor/eliminar}" method="post"
+                                      onsubmit="return confirm('¿Estás seguro de eliminar este proveedor?');"
+                                      class="inline">
+                                    <input type="hidden" name="id" th:value="${proveedor.id}">
+                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Eliminar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalles -->
+    <div id="modal-detalles" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-96 overflow-y-auto">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-900">Detalles del Proveedor</h3>
+                    <button id="cerrar-modal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="contenido-modal" class="p-6">
+                    <!-- El contenido se llenará dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Script cargado correctamente");
+
+            // Función debounce para limitar peticiones
+            function debounce(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            // Configurar autocompletado para cada campo
+            document.querySelectorAll('.autocomplete-field').forEach(input => {
+                console.log("Configurando autocompletado para:", input.id);
+
+                const dropdown = input.nextElementSibling;
+                const suggestionsUrl = input.dataset.suggestionsUrl;
+
+                // Evento de entrada con debounce
+                input.addEventListener('input', debounce(function(e) {
+                    const termino = e.target.value.trim();
+                    console.log("Input detectado en", input.id, "con valor:", termino);
+
+                    if (termino.length >= 2) {
+                        console.log("Haciendo petición a:", suggestionsUrl);
+
+                        fetch(`${suggestionsUrl}?termino=${encodeURIComponent(termino)}&limite=5`)
+                            .then(response => {
+                                if (!response.ok) throw new Error('Error en la respuesta');
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log("Respuesta recibida:", data);
+                                mostrarSugerencias(data, dropdown, input);
+                            })
+                            .catch(error => {
+                                console.error('Error al obtener sugerencias:', error);
+                                dropdown.classList.add('hidden');
+                            });
+                    } else {
+                        dropdown.classList.add('hidden');
+                    }
+                }, 300));
+
+                // Ocultar dropdown al hacer clic fuera
+                document.addEventListener('click', function(e) {
+                    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                        dropdown.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Función para mostrar sugerencias
+            function mostrarSugerencias(sugerencias, dropdown, input) {
+                console.log("Mostrando sugerencias:", sugerencias);
+
+                dropdown.innerHTML = '';
+
+                if (!sugerencias || sugerencias.length === 0) {
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+
+                sugerencias.forEach(sugerencia => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-200 last:border-b-0';
+
+                    // Determinar qué campo mostrar según el input
+                    let displayText = '';
+                    let secondaryText = '';
+
+                    if (input.id === 'rfc') {
+                        displayText = sugerencia.rfc || '';
+                        secondaryText = sugerencia.razonSocial || '';
+                    } else if (input.id === 'razonSocial') {
+                        displayText = sugerencia.razonSocial || '';
+                        secondaryText = sugerencia.rfc || '';
+                    } else if (input.id === 'correo') {
+                        displayText = sugerencia.correo || '';
+                        secondaryText = sugerencia.razonSocial || '';
+                    }
+
+                    item.innerHTML = `
+                        <div class="font-medium text-gray-900">${displayText}</div>
+                        ${secondaryText ? `<div class="text-sm text-gray-500">${secondaryText}</div>` : ''}
+                    `;
+
+                    item.addEventListener('click', function() {
+                        input.value = displayText;
+                        dropdown.classList.add('hidden');
+                        console.log("Sugerencia seleccionada:", displayText);
+                    });
+
+                    dropdown.appendChild(item);
+                });
+
+                dropdown.classList.remove('hidden');
+            }
+
+            // Botón limpiar formulario
+            document.getElementById('limpiar-form').addEventListener('click', function() {
+                document.getElementById('search-form').reset();
+                document.querySelectorAll('.suggestions-dropdown').forEach(dropdown => {
+                    dropdown.classList.add('hidden');
+                });
+            });
+
+            // Modal para ver detalles
+            const modal = document.getElementById('modal-detalles');
+            const contenidoModal = document.getElementById('contenido-modal');
+            const cerrarModal = document.getElementById('cerrar-modal');
+
+            // Abrir modal
+            document.querySelectorAll('.ver-detalle-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const proveedorId = this.dataset.proveedorId;
+                    const fila = this.closest('tr');
+
+                    // Obtener datos de la fila
+                    const celdas = fila.querySelectorAll('td');
+                    const rfc = celdas[0].textContent.trim();
+                    const razonSocial = celdas[1].querySelector('div').textContent.trim();
+                    const contacto = celdas[1].querySelectorAll('div')[1]?.textContent.trim() || 'No especificado';
+                    const correo = celdas[2].textContent.trim();
+                    const telefono = celdas[3].textContent.trim();
+                    const estatus = celdas[4].textContent.trim();
+
+                    // Llenar modal con información básica
+                    contenidoModal.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">RFC</p>
+                                    <p class="text-gray-800 font-semibold text-lg">${rfc}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Razón Social</p>
+                                    <p class="text-gray-800 font-semibold text-lg">${razonSocial}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Persona de Contacto</p>
+                                    <p class="text-gray-800 font-semibold text-lg">${contacto}</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Correo Electrónico</p>
+                                    <p class="text-gray-800 font-semibold text-lg">${correo}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Teléfono</p>
+                                    <p class="text-gray-800 font-semibold text-lg">${telefono}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Estatus</p>
+                                    <p class="text-gray-800 font-semibold text-lg">${estatus}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+                            <a href="/administracion/proveedor/editar/${proveedorId}"
+                               class="bg-white text-zorroRed border border-zorroRed px-4 py-2 rounded-md hover:bg-zorroRed hover:text-white transition-colors font-medium">
+                                Editar
+                            </a>
+                        </div>
+                    `;
+
+                    modal.classList.remove('hidden');
+                });
+            });
+
+            // Cerrar modal
+            cerrarModal.addEventListener('click', function() {
+                modal.classList.add('hidden');
+            });
+
+            // Cerrar modal al hacer clic fuera
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+
+            // Cerrar modal con Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </div>

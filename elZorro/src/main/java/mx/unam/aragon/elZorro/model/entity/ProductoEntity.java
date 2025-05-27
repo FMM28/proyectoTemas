@@ -2,6 +2,7 @@ package mx.unam.aragon.elZorro.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Entity(name = "producto")
@@ -19,6 +20,9 @@ public class ProductoEntity {
 
     @Column(name = "imagen")
     private String imagen;
+
+    @Transient // Indica que este campo no es persistente
+    private MultipartFile imagenFile;
 
     @Column(name = "precio")
     private Double precio;

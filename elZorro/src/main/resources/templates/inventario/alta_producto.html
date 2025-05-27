@@ -1,0 +1,137 @@
+<div th:fragment="alta-producto-form" class="bg-white rounded-lg shadow-md p-6">
+  <h2 class="text-2xl font-bold text-zorroDark mb-6">Alta de Producto</h2>
+
+  <form th:action="@{/administracion/inventario/producto/alta}"
+        th:object="${producto}"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-6">
+
+    <!-- Mensajes de error generales -->
+    <div th:if="${#fields.hasErrors('*')}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">Por favor corrige los errores en el formulario.</span>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success != null}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error != null}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+      <span th:text="${error}"></span>
+    </div>
+
+    <!-- Campo Nombre -->
+    <div>
+      <label for="nombre" class="block text-zorroDark font-medium mb-2">Nombre del Producto</label>
+      <input type="text" id="nombre" name="nombre" th:field="*{nombre}"
+             class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+             placeholder="Ingrese el nombre del producto">
+      <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Precio -->
+    <div>
+      <label for="precio" class="block text-zorroDark font-medium mb-2">Precio</label>
+      <input type="number" id="precio" name="precio" th:field="*{precio}" step="0.01" min="0"
+             class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+             placeholder="Ingrese el precio del producto">
+      <span th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Stock -->
+    <div>
+      <label for="stock" class="block text-zorroDark font-medium mb-2">Stock</label>
+      <input type="number" id="stock" name="stock" th:field="*{stock}" min="0"
+             class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+             placeholder="Ingrese la cantidad en stock">
+      <span th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Imagen con previsualización -->
+    <div>
+      <label for="imagenFile" class="block text-zorroDark font-medium mb-2">Imagen del Producto</label>
+      <div class="flex items-center space-x-4">
+        <!-- Previsualización -->
+        <div class="w-24 h-24 border rounded-md overflow-hidden bg-gray-100">
+          <img id="preview" th:if="${producto.imagen != null}"
+               th:src="@{'/uploads/productos/' + ${producto.imagen}}"
+               class="w-full h-full object-cover"/>
+          <div th:unless="${producto.imagen != null}" class="flex items-center justify-center h-full text-gray-400">
+            <span>Vista previa</span>
+          </div>
+        </div>
+        <!-- Input file -->
+        <div class="flex-1">
+          <input type="file" id="imagenFile" name="imagenFile"
+                 class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+                 accept="image/jpeg, image/png, image/webp"
+                 onchange="previewImage(this)">
+          <p class="text-sm text-gray-500 mt-1">Formatos aceptados: JPEG, PNG o WebP (Max 2MB)</p>
+          <span th:if="${#fields.hasErrors('imagenFile')}" th:errors="*{imagenFile}"
+                class="text-red-600 text-sm mt-1"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campo Categoría -->
+    <div>
+      <label for="categoria" class="block text-zorroDark font-medium mb-2">Categoría</label>
+      <select id="categoria" name="categoria" th:field="*{categoria}"
+              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent">
+        <option value="">Seleccione una categoría</option>
+        <option th:each="categoria : ${categorias}"
+                th:value="${categoria.id}"
+                th:text="${categoria.nombre}"></option>
+      </select>
+      <span th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Proveedor -->
+    <div>
+      <label for="proveedor" class="block text-zorroDark font-medium mb-2">Proveedor</label>
+      <select id="proveedor" name="proveedor" th:field="*{proveedor}"
+              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent">
+        <option value="">Seleccione un proveedor</option>
+        <option th:each="proveedor : ${proveedores}"
+                th:value="${proveedor.id}"
+                th:text="${proveedor.razonSocial}"></option>
+      </select>
+      <span th:if="${#fields.hasErrors('proveedor')}" th:errors="*{proveedor}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-end space-x-4">
+      <a th:href="@{/administracion/inventario/producto/lista}"
+         class="bg-gray-300 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-400 transition-colors font-medium">
+        Cancelar
+      </a>
+      <button type="submit"
+              class="bg-zorroRed text-white px-6 py-3 rounded-md hover:bg-zorroDark transition-colors font-medium">
+        Guardar Producto
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Función para previsualizar la imagen seleccionada
+  function previewImage(input) {
+    const preview = document.getElementById('preview');
+    const file = input.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+</script>

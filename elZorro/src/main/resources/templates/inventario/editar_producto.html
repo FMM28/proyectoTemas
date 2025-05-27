@@ -1,0 +1,118 @@
+<div th:fragment="editar-producto-form" class="bg-white rounded-lg shadow-md p-6">
+  <h2 class="text-2xl font-bold text-zorroDark mb-6">Editar Producto</h2>
+
+  <form th:action="@{/administracion/inventario/producto/editar/{id}(id=${producto.id})}"
+        th:object="${producto}"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-6">
+
+    <!-- Mensajes de error -->
+    <div th:if="${#fields.hasErrors('*')}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+      <strong class="font-bold">Error!</strong>
+      <span class="block sm:inline">Por favor corrige los errores en el formulario.</span>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success != null}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error != null}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+      <span th:text="${error}"></span>
+    </div>
+
+    <!-- Campo Nombre -->
+    <div>
+      <label for="nombre" class="block text-zorroDark font-medium mb-2">Nombre del Producto</label>
+      <input type="text" id="nombre" name="nombre" th:field="*{nombre}"
+             class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+             placeholder="Ingrese el nombre del producto">
+      <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Precio -->
+    <div>
+      <label for="precio" class="block text-zorroDark font-medium mb-2">Precio</label>
+      <input type="number" id="precio" name="precio" th:field="*{precio}" step="0.01" min="0"
+             class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+             placeholder="Ingrese el precio del producto">
+      <span th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Imagen -->
+    <div>
+      <label class="block text-zorroDark font-medium mb-2">Imagen Actual</label>
+      <div class="flex items-center space-x-4 mb-4">
+        <div class="w-24 h-24 border rounded-md overflow-hidden bg-gray-100">
+          <img th:if="${producto.imagen}"
+               th:src="@{'/uploads/productos/' + ${producto.imagen}}"
+               class="w-full h-full object-cover">
+          <div th:unless="${producto.imagen}" class="flex items-center justify-center h-full text-gray-400">
+            <span class="text-xs">Sin imagen</span>
+          </div>
+        </div>
+        <span th:text="${producto.imagen}" class="text-sm text-gray-500"></span>
+      </div>
+
+      <label for="imagenFile" class="block text-zorroDark font-medium mb-2">Cambiar Imagen</label>
+      <input type="file" id="imagenFile" name="imagenFile"
+             class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent"
+             accept="image/jpeg, image/png, image/webp">
+      <p class="text-sm text-gray-500 mt-1">Dejar en blanco para mantener la imagen actual</p>
+      <span th:if="${#fields.hasErrors('imagenFile')}" th:errors="*{imagenFile}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Categoría -->
+    <div>
+      <label for="categoria" class="block text-zorroDark font-medium mb-2">Categoría</label>
+      <select id="categoria" name="categoria" th:field="*{categoria}"
+              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent">
+        <option th:each="categoria : ${categorias}"
+                th:value="${categoria.id}"
+                th:text="${categoria.nombre}"
+                th:selected="${categoria.id == producto.categoria?.id}"></option>
+      </select>
+      <span th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Campo Proveedor -->
+    <div>
+      <label for="proveedor" class="block text-zorroDark font-medium mb-2">Proveedor</label>
+      <select id="proveedor" name="proveedor" th:field="*{proveedor}"
+              class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-zorroRed focus:border-transparent">
+        <option th:each="proveedor : ${proveedores}"
+                th:value="${proveedor.id}"
+                th:text="${proveedor.razonSocial}"
+                th:selected="${proveedor.id == producto.proveedor?.id}"></option>
+      </select>
+      <span th:if="${#fields.hasErrors('proveedor')}" th:errors="*{proveedor}"
+            class="text-red-600 text-sm mt-1"></span>
+    </div>
+
+    <!-- Botones -->
+    <div class="flex justify-end space-x-4">
+      <a th:href="@{/administracion/inventario/producto/lista}"
+         class="bg-gray-300 text-gray-800 px-6 py-3 rounded-md hover:bg-gray-400 transition-colors font-medium">
+        Cancelar
+      </a>
+      <button type="submit"
+              class="bg-zorroRed text-white px-6 py-3 rounded-md hover:bg-zorroDark transition-colors font-medium">
+        Actualizar Producto
+      </button>
+    </div>
+  </form>
+  <form th:action="@{'/administracion/inventario/producto/eliminar/' + ${producto.id}}"
+        method="post"
+        class="inline"
+        onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+    <input type="hidden" name="_method" value="delete" />
+    <button type="submit"
+            class="text-red-600 hover:text-red-900 bg-transparent border-none cursor-pointer">
+      Eliminar
+    </button>
+  </form>
+</div>
