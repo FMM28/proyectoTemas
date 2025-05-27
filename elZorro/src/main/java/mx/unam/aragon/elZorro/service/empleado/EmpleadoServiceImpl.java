@@ -1,9 +1,12 @@
 package mx.unam.aragon.elZorro.service.empleado;
 
+import lombok.Getter;
 import mx.unam.aragon.elZorro.model.entity.EmpleadoEntity;
 import mx.unam.aragon.elZorro.model.entity.RolEntity;
 import mx.unam.aragon.elZorro.repository.EmpleadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     @Autowired
     private EmpleadoRepository empleadoRepository;
 
+    @Getter
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -57,5 +61,18 @@ public class EmpleadoServiceImpl implements EmpleadoService {
                 .build();
 
         return empleadoRepository.save(empleado);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EmpleadoEntity> findAllPaginated(Pageable pageable) {
+        return empleadoRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EmpleadoEntity> buscarPorNombre(String nombre, Pageable pageable) {
+        return empleadoRepository.findByNombreContainingIgnoreCaseOrApellidoPaternoContainingIgnoreCaseOrApellidoMaternoContainingIgnoreCase(
+                nombre, nombre, nombre, pageable);
     }
 }
