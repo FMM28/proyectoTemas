@@ -1,0 +1,81 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.receipt-container {
+    width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #cc0000;
+    padding-bottom: 10px;
+}
+
+header img {
+    max-width: 150px;
+    margin-bottom: 10px;
+}
+
+header h1 {
+    font-size: 24px; 
+    margin: 5px 0;
+    color: #cc0000;
+}
+
+header h3 {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #555;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    background-color: #cc0000;
+    color: white;
+}
+
+td:nth-child(1) {
+    width: 60%; 
+}
+
+tr:nth-child(even) {
+    background-color: #ffdddd;
+}
+
+tfoot td {
+    font-weight: bold;
+    background-color: #cc0000;
+    color: white;
+}
+
+footer {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+    border-top: 2px solid #cc0000;
+    padding-top: 10px;
+    color: #cc0000;
+}

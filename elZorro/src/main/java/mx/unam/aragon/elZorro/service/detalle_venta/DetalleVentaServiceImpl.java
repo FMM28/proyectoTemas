@@ -37,4 +37,10 @@ public class DetalleVentaServiceImpl implements DetalleVentaService {
         Optional<DetalleVentaEntity> detalleVenta = detalleVentaRepository.findById(id);
         return detalleVenta.orElse(null);
     }
+
+    @Override
+    public List<DetalleVentaEntity> findByVenta(Long id) {
+        return detalleVentaRepository.findByVenta(id);
+    }
+
 }

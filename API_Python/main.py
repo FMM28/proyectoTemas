@@ -1,10 +1,11 @@
-from flask import Flask,jsonify,send_file,request
+from flask import Flask,jsonify,send_file,request,render_template,make_response
 from flask_jwt_extended import JWTManager, jwt_required
 from dotenv import load_dotenv
 from os import getenv
 from openpyxl import Workbook
 from io import BytesIO
 from datetime import datetime
+from weasyprint import HTML
 
 load_dotenv()
 app = Flask(__name__)
@@ -50,5 +51,40 @@ def generar_excel():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/generar_recibo', methods=['POST', 'GET'])
+@jwt_required()
+def generar_recibo():
+
+    recibo = request.get_json()
+        
+    if not recibo:
+        return {"error": "No se proporcionó JSON"}, 400
+    
+    required_fields = ["id", "vendedor", "fecha", "cliente", "productos", "total"]
+    for field in required_fields:
+        if field not in recibo:
+            return {"error": f"Campo obligatorio faltante: {field}"}, 400
+    
+    try:
+        html = render_template('recibo.html', recibo=recibo)
+
+        base_url = request.url_root
+
+        pdf_buffer = BytesIO()
+
+        HTML(string=html, base_url=base_url).write_pdf(pdf_buffer)
+
+        pdf_buffer.seek(0)
+
+        response = make_response(pdf_buffer.read())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename=recibo_{recibo["id"]}.pdf'
+
+        return response
+        
+    except Exception as e:
+        return {"error": f"Error al generar el recibo: {str(e)}"}, 500
+
 
 app.run('localhost',8888,debug=False)

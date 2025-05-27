@@ -10,4 +10,5 @@ public interface DetalleVentaService {
     List<DetalleVentaEntity> findAll();
     void deleteById(Long id);
     DetalleVentaEntity findById(Long id);
+    List<DetalleVentaEntity> findByVenta(Long id);
 }

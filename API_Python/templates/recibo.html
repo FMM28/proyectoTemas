@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Recibo de Compra #{{ recibo.id }}</title>
+</head>
+<body>
+    <div class="receipt-container">
+        <header>
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo">
+            <h1>RECIBO DE COMPRA</h1>
+            <h3>RECIBO #{{ recibo.id }}</h3>
+            <h3>VENDEDOR: {{ recibo.vendedor }}</h3>
+            <h3>FECHA Y HORA: {{ recibo.fecha }}</h3>
+            <h3>CLIENTE: {{ recibo.cliente }}</h3>
+        </header>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in recibo.productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.cantidad }}</td>
+                    <td>${{ "%.2f"|format(producto.precio) }}</td>
+                    <td>${{ "%.2f"|format(producto.cantidad * producto.precio) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total">
+                    <td colspan="3">TOTAL</td>
+                    <td>${{ "%.2f"|format(recibo.total) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <footer>
+            <p>¡Gracias por su compra!</p>
+        </footer>
+    </div>
+</body>
+</html>
