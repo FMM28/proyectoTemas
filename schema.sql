@@ -43,7 +43,7 @@ CREATE TABLE proveedor (
   rfc VARCHAR(13) NOT NULL UNIQUE,
   direccion VARCHAR(200) NOT NULL,
   c_postal VARCHAR(5) NOT NULL,
-  regimen_fiscal ENUM('601', '603', '605', '606', '612', '621', '625', '626') NOT NULL,
+  regimen_fiscal ENUM('_601', '_603', '_605', '_606', '_612', '_621', '_625', '_626') NOT NULL,
   correo VARCHAR(255) NOT NULL,
   telefono VARCHAR(20) NOT NULL,
   contacto_nombre VARCHAR(100),
