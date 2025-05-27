@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/administracion/inventario/categoria")
 @PreAuthorize("hasRole('ADMIN')")
-public class AltaCategoriaController {
+public class AltaCategoriaController{
 
     @Autowired
     private CategoriaService categoriaService;

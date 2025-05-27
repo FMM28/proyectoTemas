@@ -1,0 +1,48 @@
+<div th:fragment="detalle-producto" class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-zorroDark mb-6">Detalle del Producto</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Columna izquierda: Imagen -->
+        <div>
+            <div class="w-full h-64 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                <img th:if="${producto.imagen}"
+                     th:src="@{'/uploads/productos/' + ${producto.imagen}}"
+                     class="max-w-full max-h-full object-contain"
+                     alt="Imagen del producto">
+                <div th:unless="${producto.imagen}" class="text-gray-400">
+                    <span>Imagen no disponible</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna derecha: Detalles -->
+        <div class="space-y-4">
+            <div>
+                <h3 class="text-xl font-semibold" th:text="${producto.nombre}"></h3>
+                <p class="text-gray-500" th:text="${producto.categoria?.nombre}"></p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">Precio</p>
+                    <p class="font-medium" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 2, 'COMMA')}"></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Stock</p>
+                    <p class="font-medium" th:text="${producto.stock} + ' unidades'"></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Proveedor</p>
+                    <p class="font-medium" th:text="${producto.proveedor?.razonSocial}"></p>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <a th:href="@{/administracion/inventario/producto/lista}"
+                   class="bg-zorroRed text-white px-6 py-2 rounded-md hover:bg-zorroDark transition-colors font-medium">
+                    Volver al listado
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
