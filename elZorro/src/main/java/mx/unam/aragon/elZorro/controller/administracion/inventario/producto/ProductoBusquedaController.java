@@ -50,6 +50,7 @@ public class ProductoBusquedaController {
     @GetMapping("/detalle/{id}")
     public String verDetalleProducto(@PathVariable Long id, Model model) {
         ProductoEntity producto = productoService.findById(id);
+        System.out.println(producto);
         model.addAttribute("producto", producto);
         model.addAttribute("mainContent", "inventario/detalle_producto");
         return "common/layout";
