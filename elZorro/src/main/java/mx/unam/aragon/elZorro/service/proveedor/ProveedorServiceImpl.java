@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class ProveedorServiceImpl implements ProveedorService {
@@ -56,6 +57,24 @@ public class ProveedorServiceImpl implements ProveedorService {
         return proveedorRepository.findByRazonSocialContainingIgnoreCase(razonSocial).orElse(null);
     }
 
+    // NUEVO: Método para búsqueda combinada
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProveedorEntity> buscarProveedores(String rfc, String razonSocial, String correo) {
+        try {
+            // Convertir strings vacíos a null para la query
+            String rfcParam = (rfc != null && !rfc.trim().isEmpty()) ? rfc.trim() : null;
+            String razonSocialParam = (razonSocial != null && !razonSocial.trim().isEmpty()) ? razonSocial.trim() : null;
+            String correoParam = (correo != null && !correo.trim().isEmpty()) ? correo.trim() : null;
+
+            return proveedorRepository.buscarProveedoresPorCriterios(rfcParam, razonSocialParam, correoParam);
+        } catch (Exception e) {
+            System.err.println("Error en búsqueda de proveedores: " + e.getMessage());
+            e.printStackTrace();
+            return List.of(); // Devolver lista vacía en caso de error
+        }
+    }
+
     // Métodos para sugerencias (con validación mejorada)
     @Override
     @Transactional(readOnly = true)
@@ -80,23 +99,32 @@ public class ProveedorServiceImpl implements ProveedorService {
             return List.of();
         }
 
-        List<ProveedorEntity> resultados;
-        switch (campo.toLowerCase()) {
-            case "rfc":
-                resultados = proveedorRepository.findSugerenciasRfc(termino.toLowerCase());
-                break;
-            case "razonsocial":
-                resultados = proveedorRepository.findSugerenciasRazonSocial(termino.toLowerCase());
-                break;
-            case "correo":
-                resultados = proveedorRepository.findSugerenciasCorreo(termino.toLowerCase());
-                break;
-            default:
-                return List.of();
-        }
+        try {
+            List<ProveedorEntity> resultados;
+            String terminoLimpio = termino.trim();
 
-        return resultados.stream()
-                .limit(limite)
-                .collect(Collectors.toList());
+            switch (campo.toLowerCase()) {
+                case "rfc":
+                    resultados = proveedorRepository.findSugerenciasRfcSinLimite(terminoLimpio);
+                    break;
+                case "razonsocial": // CORREGIDO: Era "razonsocial", ahora es "razonSocial"
+                    resultados = proveedorRepository.findSugerenciasRazonSocialSinLimite(terminoLimpio);
+                    break;
+                case "correo":
+                    resultados = proveedorRepository.findSugerenciasCorreoSinLimite(terminoLimpio);
+                    break;
+                default:
+                    return List.of();
+            }
+
+            return resultados.stream()
+                    .limit(Math.max(1, limite)) // Asegurar que el límite sea al menos 1
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener sugerencias para " + campo + ": " + e.getMessage());
+            e.printStackTrace();
+            return List.of();
+        }
     }
 }

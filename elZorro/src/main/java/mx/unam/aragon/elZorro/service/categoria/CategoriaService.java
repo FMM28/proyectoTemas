@@ -5,8 +5,8 @@ import mx.unam.aragon.elZorro.model.entity.CategoriaEntity;
 import java.util.List;
 
 public interface CategoriaService {
-    CategoriaEntity save(CategoriaEntity categoria);
     List<CategoriaEntity> findAll();
-    void deleteById(Long id);
     CategoriaEntity findById(Long id);
+    CategoriaEntity save(CategoriaEntity categoria);
+    void deleteById(Long id);
 }

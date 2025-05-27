@@ -105,12 +105,20 @@
             </div>
 
             <!-- Botón de Submit -->
-            <div class="pt-6">
+            <div class="pt-6 flex flex-col sm:flex-row gap-4">
+                <!-- Botón Registrar Proveedor (primario) -->
                 <button type="submit"
-                        class="w-full bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-colors font-medium text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed">
+                        class="w-full sm:w-auto bg-zorroRed text-white px-8 py-4 rounded-xl hover:bg-zorroDark transition-colors font-medium text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zorroRed flex items-center justify-center">
                     <i class="fas fa-save mr-2"></i> Registrar Proveedor
                 </button>
+
+                <!-- Botón Cancelar (secundario) -->
+                <a th:href="@{/administracion/proveedor/buscar}"
+                   class="w-full sm:w-auto bg-white text-zorroRed border border-zorroRed px-6 py-3 rounded-xl hover:bg-zorroRed hover:text-white transition-colors font-medium text-center flex items-center justify-center">
+                    Cancelar
+                </a>
             </div>
+
         </form>
     </div>
 </div>
