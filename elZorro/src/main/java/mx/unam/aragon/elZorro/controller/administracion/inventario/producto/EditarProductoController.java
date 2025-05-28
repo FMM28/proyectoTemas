@@ -1,14 +1,18 @@
 package mx.unam.aragon.elZorro.controller.administracion.inventario.producto;
 
+import mx.unam.aragon.elZorro.converter.DoubleConverter;
+import mx.unam.aragon.elZorro.converter.IntegerConverter;
 import mx.unam.aragon.elZorro.model.entity.ProductoEntity;
 import mx.unam.aragon.elZorro.service.ImageStorageService;
 import mx.unam.aragon.elZorro.service.categoria.CategoriaService;
 import mx.unam.aragon.elZorro.service.producto.ProductoService;
 import mx.unam.aragon.elZorro.service.proveedor.ProveedorService;
+import mx.unam.aragon.elZorro.validator.ProductoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
@@ -30,6 +34,8 @@ public class EditarProductoController {
     ProveedorService proveedorService;
     @Autowired
     ImageStorageService imageStorageService;
+    @Autowired
+    private ProductoValidator productoValidator;
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
@@ -103,5 +109,12 @@ public class EditarProductoController {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar el producto");
         }
         return "redirect:/administracion/inventario/producto/lista";
+    }
+
+    @InitBinder("producto")
+    public void initProductoBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Double.class, "precio", new DoubleConverter());
+        binder.registerCustomEditor(Integer.class,"stock",new IntegerConverter());
+        binder.addValidators(productoValidator);
     }
 }

@@ -46,6 +46,8 @@
                                class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                                placeholder="Ej. 12345"
                                maxlength="5">
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('codigoPostal')}"
+                               th:errors="*{codigoPostal}"></small>
                     </div>
 
                     <!-- Campo Teléfono -->
@@ -54,6 +56,8 @@
                         <input type="tel" th:field="*{telefono}"
                                class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                                placeholder="Ej. 5512345678">
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('telefono')}"
+                               th:errors="*{telefono}"></small>
                     </div>
                 </div>
 
@@ -65,6 +69,8 @@
                         <textarea th:field="*{direccion}" rows="3"
                                   class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent resize-none"
                                   placeholder="Ej. Calle Principal #123, Col. Centro"></textarea>
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('direccion')}"
+                               th:errors="*{direccion}"></small>
                     </div>
 
                     <!-- Campo Correo -->
@@ -73,6 +79,8 @@
                         <input type="email" th:field="*{correo}"
                                class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                                placeholder="Ej. contacto@empresa.com">
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('correo')}"
+                               th:errors="*{correo}"></small>
                     </div>
 
                     <!-- Campo Nombre de Contacto -->
@@ -81,6 +89,8 @@
                         <input type="text" th:field="*{contactoNombre}"
                                class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                                placeholder="Ej. Juan Pérez García">
+                        <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('contactoNombre')}"
+                               th:errors="*{contactoNombre}"></small>
                     </div>
                 </div>
             </div>
@@ -102,7 +112,7 @@
                 </select>
                 <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('regimenFiscal')}"
                        th:errors="*{regimenFiscal}"></small>
-            </div>  
+            </div>
 
             <!-- Botón de Submit -->
             <div class="pt-6 flex flex-col sm:flex-row gap-4">

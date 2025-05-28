@@ -3,11 +3,13 @@ package mx.unam.aragon.elZorro.controller.administracion.inventario.categoria;
 import jakarta.validation.Valid;
 import mx.unam.aragon.elZorro.model.entity.CategoriaEntity;
 import mx.unam.aragon.elZorro.service.categoria.CategoriaService;
+import mx.unam.aragon.elZorro.validator.CategoriaValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -18,6 +20,9 @@ public class ManageCategoriaController {
 
     @Autowired
     private CategoriaService categoriaService;
+
+    @Autowired
+    private CategoriaValidator categoriaValidator;
 
     @GetMapping("/lista")
     public String listarCategorias(Model model) {
@@ -72,5 +77,10 @@ public class ManageCategoriaController {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar: " + e.getMessage());
         }
         return "redirect:/administracion/inventario/categoria/lista";
+    }
+
+    @InitBinder("categoria")
+    public void initBinderCategoria(WebDataBinder binder) {
+        binder.addValidators(categoriaValidator);
     }
 }
