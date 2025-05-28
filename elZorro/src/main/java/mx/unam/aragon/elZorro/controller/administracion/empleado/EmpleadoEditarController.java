@@ -4,12 +4,14 @@ import jakarta.validation.Valid;
 import mx.unam.aragon.elZorro.model.entity.EmpleadoEntity;
 import mx.unam.aragon.elZorro.service.empleado.EmpleadoService;
 import mx.unam.aragon.elZorro.service.rol.RolService;
+import mx.unam.aragon.elZorro.validator.EmpleadoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -26,6 +28,9 @@ public class EmpleadoEditarController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmpleadoValidator empleadoValidator;
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
@@ -94,5 +99,10 @@ public class EmpleadoEditarController {
         model.addAttribute("roles", rolService.findAll());
         model.addAttribute("mainContent", "empleado/editar_empleado");
         return "common/layout";
+    }
+
+    @InitBinder("empleado")
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(empleadoValidator);
     }
 }

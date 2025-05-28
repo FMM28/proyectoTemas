@@ -4,8 +4,8 @@ import mx.unam.aragon.elZorro.model.entity.DetalleVentaEntity;
 import mx.unam.aragon.elZorro.model.entity.VentaEntity;
 import mx.unam.aragon.elZorro.model.json.Producto;
 import mx.unam.aragon.elZorro.model.json.Recibo;
-import mx.unam.aragon.elZorro.service.detalle_venta.DetalleVentaServiceImpl;
-import mx.unam.aragon.elZorro.service.venta.VentaServiceImpl;
+import mx.unam.aragon.elZorro.service.detalle_venta.DetalleVentaService;
+import mx.unam.aragon.elZorro.service.venta.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 public class ReciboService {
     @Autowired
-    private VentaServiceImpl ventaService;
+    private VentaService ventaService;
     @Autowired
-    private DetalleVentaServiceImpl detalleVentaService;
+    private DetalleVentaService detalleVentaService;
 
     public Recibo getRecibo(Long id) {
         VentaEntity venta = ventaService.findById(id);

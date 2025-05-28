@@ -10,6 +10,8 @@ public class ProveedorValidator implements Validator {
     private static final String RFC_PATTERN_FISICA = "^[A-ZÑ&]{4}\\d{6}[A-Z0-9]{3}$";
     private static final String RFC_PATTERN_MORAL = "^[A-ZÑ&]{3}\\d{6}[A-Z0-9]{3}$";
     private static final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private static final String CODIGO_PATTERN = "^[0-9]{5}$";
+    private static final String CELULAR_PATTERN = "^\\+?[0-9 ]+$";
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -42,6 +44,8 @@ public class ProveedorValidator implements Validator {
             errors.rejectValue("codigoPostal", "proveedor.codigoPostal.vacio", "El código postal no puede estar vacío");
         } else if (proveedor.getCodigoPostal().length() != 5) {
             errors.rejectValue("codigoPostal", "proveedor.codigoPostal.longitud", "El código postal debe tener 5 caracteres");
+        }else if (!proveedor.getCodigoPostal().matches(CODIGO_PATTERN)) {
+            errors.rejectValue("codigoPostal","proveedor.codigoPostal.patron","El codigo postal no tiene el patron correcto");
         }
         if(proveedor.getRegimenFiscal() == null) {
             errors.rejectValue("regimenFiscal", "proveedor.regimenFiscal.vacio", "El régimen fiscal no puede estar vacío");
@@ -53,6 +57,8 @@ public class ProveedorValidator implements Validator {
         }
         if(proveedor.getTelefono() == null || proveedor.getTelefono().trim().isEmpty()) {
             errors.rejectValue("telefono", "proveedor.telefono.vacio", "El teléfono no puede estar vacío");
+        } else if (!proveedor.getTelefono().matches(CELULAR_PATTERN)) {
+            errors.rejectValue("telefono","proveedor.telefono.patron","El telefono no tiene el patron correcto");
         }
         if(proveedor.getContactoNombre() == null || proveedor.getContactoNombre().trim().isEmpty()) {
             errors.rejectValue("contactoNombre", "proveedor.contactoNombre.vacio", "El nombre del contacto no puede estar vacío");

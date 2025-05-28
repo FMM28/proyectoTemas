@@ -63,22 +63,22 @@ public class NuevaVentaController {
     public String buscarProductos(@RequestParam(required = false) String busqueda,
                                   @RequestParam(required = false) String categoria,
                                   Model model) {
-        List<ProductoEntity> productos;
-
-        if (busqueda != null && !busqueda.trim().isEmpty()) {
-            productos = productoService.buscarPorNombre(busqueda); // ESTO NO JALARA
-        } else if (categoria != null && !categoria.trim().isEmpty()) {
-            productos = productoService.buscarPorCategoria(categoria);
-        } else {
-            productos = productoService.findAll();
-        }
-
-        // Convertir a ProductoCarritoDTO para la vista
-        List<ProductoCarritoDTO> productosCarrito = productos.stream()
-                .map(ProductoCarritoDTO::new)
-                .collect(Collectors.toList());
-
-        model.addAttribute("productos", productosCarrito);
+//        List<ProductoEntity> productos;
+//
+//        if (busqueda != null && !busqueda.trim().isEmpty()) {
+//            productos = productoService.buscarPorNombre(busqueda); // ESTO NO JALARA
+//        } else if (categoria != null && !categoria.trim().isEmpty()) {
+//            productos = productoService.buscarPorCategoria(categoria);
+//        } else {
+//            productos = productoService.findAll();
+//        }
+//
+//        // Convertir a ProductoCarritoDTO para la vista
+//        List<ProductoCarritoDTO> productosCarrito = productos.stream()
+//                .map(ProductoCarritoDTO::new)
+//                .collect(Collectors.toList());
+//
+//        model.addAttribute("productos", productosCarrito);
         return "fragments/buscar-productos :: productos-lista";
     }
 
