@@ -17,6 +17,7 @@ import java.util.Optional;
 @RequestMapping("/caja")
 @PreAuthorize("hasRole('CAJA')")
 public class BuscarClienteController {
+    @Autowired
     ClienteService clienteService;
 
     @GetMapping("/buscar-cliente")
