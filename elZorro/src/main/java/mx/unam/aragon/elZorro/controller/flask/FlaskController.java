@@ -72,6 +72,8 @@ public class FlaskController {
             VentaEntity venta = ventaService.findById(id);
             String correo = venta.getCliente().getCorreo();
 
+            System.out.println(recibo);
+
             ResponseEntity<byte[]> response = requestSender.postToFlask("/api/generar_recibo", recibo);
             byte[] pdfBytes = response.getBody();
 
