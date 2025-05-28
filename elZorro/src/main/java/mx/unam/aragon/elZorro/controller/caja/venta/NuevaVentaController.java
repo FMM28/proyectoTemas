@@ -53,7 +53,7 @@ public class NuevaVentaController {
         model.addAttribute("metodosPago", metodoPagoService.findAll());
         model.addAttribute("empleados", empleadoService.findAll());
 
-        return "venta/nueva-venta";
+        return "caja/venta/nueva-venta";
     }
 
     /**
@@ -79,7 +79,7 @@ public class NuevaVentaController {
                 .collect(Collectors.toList());
 
         model.addAttribute("productos", productosCarrito);
-        return "fragments/buscar-productos :: productos-lista";
+        return "caja/venta/fragments/buscar-productos :: productos-lista";
     }
 
     /**
