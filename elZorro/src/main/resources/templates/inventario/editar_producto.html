@@ -93,6 +93,8 @@
             class="text-red-600 text-sm mt-1"></span>
     </div>
 
+    <input type="hidden" th:field="*{stock}" value="0" />
+
     <!-- Botones -->
     <div class="flex justify-end space-x-4">
       <a th:href="@{/administracion/inventario/producto/lista}"
