@@ -54,7 +54,7 @@ public class EditarClienteController {
             Model model) {
 
         if (result.hasErrors()) {
-            model.addAttribute("mainContent", "caja/editar_cliente");
+            model.addAttribute("mainContent", "cliente/editar_cliente");
             return "common/layout";
         }
 

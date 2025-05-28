@@ -35,6 +35,8 @@
                 <input type="text" th:field="*{apellidoPaterno}"
                        class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                        placeholder="Ej. Pérez">
+                <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('apellidoPaterno')}"
+                       th:errors="*{apellidoPaterno}"></small>
             </div>
 
             <!-- Campo Apellido Materno -->
@@ -43,6 +45,8 @@
                 <input type="text" th:field="*{apellidoMaterno}"
                        class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                        placeholder="Ej. López">
+                <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('apellidoMaterno')}"
+                       th:errors="*{apellidoMaterno}"></small>
             </div>
 
             <!-- Campo Teléfono -->
@@ -51,6 +55,8 @@
                 <input type="tel" th:field="*{telefono}"
                        class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                        placeholder="Ej. 5512345678">
+                <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('telefono')}"
+                       th:errors="*{telefono}"></small>
             </div>
 
             <!-- Campo Correo -->
@@ -59,6 +65,8 @@
                 <input type="email" th:field="*{correo}"
                        class="w-full border border-gray-300 px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-zorroRed focus:border-transparent"
                        placeholder="Ej. cliente@ejemplo.com">
+                <small class="text-red-600 text-xs" th:if="${#fields.hasErrors('correo')}"
+                       th:errors="*{correo}"></small>
             </div>
 
             <!-- Botones -->
