@@ -94,7 +94,7 @@ public class NuevaVentaController {
         }
 
         model.addAttribute("carrito", carrito);
-        return "fragments/carrito-items :: carrito-contenido";
+        return "caja/venta/fragments/carrito-items :: carrito-contenido";
     }
 
     /**
@@ -114,12 +114,12 @@ public class NuevaVentaController {
         CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
         if (carrito == null || carrito.estaVacio()) {
             model.addAttribute("error", "El carrito está vacío");
-            return "fragments/confirmar-venta :: confirmacion-error";
+            return "caja/venta/fragments/confirmar-venta :: confirmacion-error";
         }
 
         model.addAttribute("carrito", carrito);
         model.addAttribute("metodosPago", metodoPagoService.findAll());
-        return "fragments/confirmar-venta :: confirmacion-contenido";
+        return "caja/venta/fragments/confirmar-venta :: confirmacion-contenido";
     }
 
     /**
