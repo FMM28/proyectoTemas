@@ -75,6 +75,8 @@
                 class="text-red-600 text-sm mt-1"></span>
         </div>
       </div>
+      <span th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"
+            class="text-red-600 text-sm mt-1"></span>
     </div>
 
     <!-- Campo Categoría -->
