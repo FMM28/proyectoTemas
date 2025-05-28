@@ -65,6 +65,8 @@ def generar_recibo():
     for field in required_fields:
         if field not in recibo:
             return {"error": f"Campo obligatorio faltante: {field}"}, 400
+        
+    recibo["fecha"] = datetime(*recibo["fecha"]).strftime("%d/%B/%Y %H:%M:%S")
     
     try:
         html = render_template('recibo.html', recibo=recibo)
