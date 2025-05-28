@@ -5,11 +5,13 @@ import mx.unam.aragon.elZorro.model.entity.ProveedorEntity;
 import mx.unam.aragon.elZorro.model.enums.EstatusProveedor;
 import mx.unam.aragon.elZorro.model.enums.RegimenFiscal;
 import mx.unam.aragon.elZorro.service.proveedor.ProveedorService;
+import mx.unam.aragon.elZorro.validator.ProveedorValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,6 +27,9 @@ public class ProveedorAltaController {
     @Autowired
     private ProveedorService proveedorService;
 
+    @Autowired
+    private ProveedorValidator proveedorValidator;
+
     @GetMapping("/alta")
     public String mostrarFormularioAlta(Model model) {
         model.addAttribute("proveedor", new ProveedorEntity());
@@ -34,10 +39,11 @@ public class ProveedorAltaController {
     }
 
     @PostMapping("/alta")
-    public String guardarProveedor(@Valid @ModelAttribute ProveedorEntity proveedor,
+    public String guardarProveedor(@Valid @ModelAttribute(value = "proveedor") ProveedorEntity proveedor,
                                    BindingResult result,
-                                   Model model,
-                                   RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes,
+                                   Model model
+                                   ) {
 
         if (result.hasErrors()) {
             return mostrarFormularioConErrores(proveedor, model, result);
@@ -70,5 +76,10 @@ public class ProveedorAltaController {
         model.addAttribute("regimenes", RegimenFiscal.values());
         model.addAttribute("mainContent", "proveedor/alta_proveedor");
         return "common/layout";
+    }
+
+    @InitBinder("proveedor")
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(proveedorValidator);
     }
 }
