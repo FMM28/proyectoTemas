@@ -1,10 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
+<div th:fragment="confirmacion-contenido">
+    <div th:if="${carrito == null or carrito.estaVacio()}" class="text-red-500 p-4 text-center">
+        No hay productos en el carrito
+    </div>
 
+    <div th:unless="${carrito == null or carrito.estaVacio()}">
+        <h4 class="font-semibold text-lg mb-4">Resumen de Venta</h4>
+
+        <div class="mb-6">
+            <div class="mb-2">
+                <span class="font-medium">Cliente:</span>
+                <span th:text="${carrito.ventaInfo.clienteNombre ?: 'No seleccionado'}"></span>
+            </div>
+            <div>
+                <span class="font-medium">Método de Pago:</span>
+                <span th:text="${carrito.ventaInfo.metodoPagoNombre ?: 'No seleccionado'}"></span>
+            </div>
+        </div>
+
+        <div class="border-t border-b py-4 mb-6">
+            <h5 class="font-medium mb-2">Productos:</h5>
+            <ul class="space-y-2">
+                <li th:each="detalle : ${carrito.detalles}">
+                    <span th:text="${detalle.producto.nombre}"></span> -
+                    <span th:text="${detalle.cantidad}"></span> x
+                    <span th:text="${#numbers.formatDecimal(detalle.precioUnitario, 1, 2)}"></span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="flex justify-between items-center mb-6">
+            <span class="font-medium">Total:</span>
+            <span class="text-xl font-bold" th:text="${#numbers.formatDecimal(carrito.total, 1, 2)}"></span>
+        </div>
+
+        <div class="flex justify-end space-x-3">
+            <button type="button" onclick="cerrarModalConfirmarVenta()"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Cancelar
+            </button>
+            <form th:action="@{/venta/procesar}" method="post">
+                <button type="submit"
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Confirmar Venta
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

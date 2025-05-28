@@ -13,6 +13,8 @@ public interface ProductoService {
     List<ProductoEntity> findAll();
     Page<ProductoEntity> findAllPaginated(Pageable pageable);
     Page<ProductoEntity> buscarPorNombre(String nombre, Pageable pageable);
+    List<ProductoEntity> buscarPorNombre(String nombre);
     ProductoEntity findById(Long id);
     void deleteById(Long id);
+    List<ProductoEntity> buscarPorCategoria(String categoria);
 }

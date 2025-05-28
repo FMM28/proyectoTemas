@@ -1,6 +1,8 @@
 package mx.unam.aragon.elZorro.service.venta;
 
 import mx.unam.aragon.elZorro.model.dto.venta.CarritoDTO;
+import mx.unam.aragon.elZorro.model.entity.DetalleVentaEntity;
+import mx.unam.aragon.elZorro.model.entity.ProductoEntity;
 import mx.unam.aragon.elZorro.model.entity.VentaEntity;
 
 import java.util.List;
@@ -30,4 +32,8 @@ public interface VentaService {
      * Verificar stock antes de procesar
      */
     boolean verificarStockDisponible(CarritoDTO carrito);
+
+    List<ProductoEntity> obtenerProductosPorVenta(Long ventaId);
+
+    public List<DetalleVentaEntity> obtenerDetallesPorVenta(Long ventaId);
 }

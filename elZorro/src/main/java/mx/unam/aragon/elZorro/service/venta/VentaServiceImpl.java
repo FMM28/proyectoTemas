@@ -67,6 +67,8 @@ public class VentaServiceImpl implements VentaService {
     @Override
     @Transactional
     public VentaEntity procesarVenta(CarritoDTO carrito) throws Exception {
+
+
         // Validaciones previas
         if (!validarVenta(carrito)) {
             throw new IllegalArgumentException("La venta no es válida: " + obtenerErroresValidacion(carrito));
@@ -185,6 +187,7 @@ public class VentaServiceImpl implements VentaService {
         if (metodoPago == null) {
             throw new IllegalArgumentException("Método de pago no encontrado");
         }
+        venta.setMetodoPago(metodoPago);
 
         // Establecer cliente (opcional)
         if (carrito.getVentaInfo().getClienteId() != null) {
@@ -212,5 +215,15 @@ public class VentaServiceImpl implements VentaService {
         detalle.setPrecioUnitario(detalleDTO.getPrecioUnitario());
 
         return detalle;
+    }
+
+    @Override
+    public List<ProductoEntity> obtenerProductosPorVenta(Long ventaId) {
+        return ventaRepository.obtenerProductosPorVentaId(ventaId);
+    }
+
+    @Override
+    public List<DetalleVentaEntity> obtenerDetallesPorVenta(Long ventaId) {
+        return detalleVentaRepository.findByVenta(ventaId);
     }
 }

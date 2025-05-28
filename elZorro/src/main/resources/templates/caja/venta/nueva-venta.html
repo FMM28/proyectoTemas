@@ -1,10 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Nueva Venta</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-Hola
+<!-- Contenido Principal -->
+<div th:fragment="content">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Registro de Nueva Venta</h1>
+
+        <!-- Mensajes Flash -->
+        <div th:if="${error}" class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            <span th:text="${error}"></span>
+        </div>
+        <div th:if="${exito}" class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            <span th:text="${exito}"></span>
+        </div>
+
+        <!-- Sección de Información de Venta -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Cliente -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-lg font-semibold mb-4">Cliente</h2>
+                <div id="cliente-info">
+                    <p th:if="${carrito.ventaInfo.clienteId != null}" th:text="${carrito.ventaInfo.clienteNombre}"></p>
+                    <button type="button" class="mt-2 text-blue-600" onclick="mostrarModalClientes()">
+                        <span th:if="${carrito.ventaInfo.clienteId != null}">Cambiar Cliente</span>
+                        <span th:if="${carrito.ventaInfo.clienteId == null}">Seleccionar Cliente</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Método de Pago -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-lg font-semibold mb-4">Método de Pago</h2>
+                <div id="metodo-pago-info">
+                    <p th:if="${carrito.ventaInfo.metodoPagoId != null}" th:text="${carrito.ventaInfo.metodoPagoNombre}"></p>
+                    <button type="button" class="mt-2 text-blue-600" onclick="mostrarModalMetodosPago()">
+                        <span th:if="${carrito.ventaInfo.metodoPagoId != null}">Cambiar Método</span>
+                        <span th:if="${carrito.ventaInfo.metodoPagoId == null}">Seleccionar Método</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Búsqueda y Productos -->
+        <div class="bg-white p-6 rounded-lg shadow mb-8">
+            <h2 class="text-lg font-semibold mb-4">Agregar Productos</h2>
+            <div class="flex mb-4">
+                <input type="text" id="buscar-producto" placeholder="Buscar productos..."
+                       class="flex-1 border border-gray-300 rounded-l px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="button" onclick="buscarProductos()"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600">
+                    Buscar
+                </button>
+            </div>
+            <div id="resultados-busqueda" class="mt-4">
+                <!-- Fragmento: Resultados de búsqueda -->
+                <div th:replace="caja/venta/fragments/buscar-productos :: productos-lista"></div>
+            </div>
+        </div>
+
+        <!-- Carrito de Compras -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Carrito de Compras</h2>
+                <button type="button" onclick="limpiarCarrito()"
+                        class="text-red-600 hover:text-red-800">
+                    Limpiar Carrito
+                </button>
+            </div>
+
+            <!-- Fragmento: Items del carrito -->
+            <div id="carrito-items">
+                <div th:replace="caja/venta/fragments/carrito-items :: carrito-contenido"></div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center border-t pt-4">
+                <div>
+                    <span class="font-semibold">Total:</span>
+                    <span id="total-carrito" class="text-xl font-bold"
+                          th:text="${#numbers.formatDecimal(carrito.total, 1, 2)}">0.00</span>
+                </div>
+                <button type="button" onclick="confirmarVenta()"
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+                        th:disabled="${carrito.estaVacio()}">
+                    Confirmar Venta
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para seleccionar cliente -->
+    <div id="modal-clientes" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Seleccionar Cliente</h3>
+                <button type="button" onclick="cerrarModalClientes()" class="text-gray-500 hover:text-gray-700">
+                    &times;
+                </button>
+            </div>
+            <div id="contenido-modal-clientes">
+                <!-- Fragmento: Lista de clientes -->
+                <div th:replace="caja/venta/fragments/seleccionar-cliente :: clientes-lista"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para seleccionar método de pago -->
+    <div id="modal-metodos-pago" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Seleccionar Método de Pago</h3>
+                <button type="button" onclick="cerrarModalMetodosPago()" class="text-gray-500 hover:text-gray-700">
+                    &times;
+                </button>
+            </div>
+            <div id="contenido-modal-metodos-pago">
+                <div class="space-y-2">
+                    <div th:each="metodo : ${metodosPago}"
+                         class="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                         th:onclick="establecerMetodoPago([(${metodo.id})], '[(${metodo.nombre})]')">
+                        <span th:text="${metodo.nombre}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="modal-confirmar-venta" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold">Confirmar Venta</h3>
+                <button type="button" onclick="cerrarModalConfirmarVenta()" class="text-gray-500 hover:text-gray-700">
+                    &times;
+                </button>
+            </div>
+            <div id="contenido-confirmar-venta">
+                <!-- Fragmento: Confirmación de venta -->
+                <div th:replace="caja/venta/fragments/confirmar-venta :: confirmacion-contenido"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts para AJAX y funcionalidad -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Funciones para mostrar/ocultar modales
+    function mostrarModalClientes() {
+        $('#modal-clientes').removeClass('hidden');
+    }
+
+    function cerrarModalClientes() {
+        $('#modal-clientes').addClass('hidden');
+    }
+
+    function mostrarModalMetodosPago() {
+        $('#modal-metodos-pago').removeClass('hidden');
+    }
+
+    function cerrarModalMetodosPago() {
+        $('#modal-metodos-pago').addClass('hidden');
+    }
+
+    function confirmarVenta() {
+        console.log("esta jalando??")
+        $.get('/venta/fragments/confirmar-venta', function(data) {
+            $('#contenido-confirmar-venta').html(data);
+            $('#modal-confirmar-venta').removeClass('hidden');
+        });
+    }
+
+    function cerrarModalConfirmarVenta() {
+        $('#modal-confirmar-venta').addClass('hidden');
+    }
+
+    // Funciones para carrito
+    function buscarProductos() {
+        const busqueda = $('#buscar-producto').val();
+        $.get('/venta/fragments/buscar-productos', { busqueda: busqueda }, function(data) {
+            $('#resultados-busqueda').html(data);
+        });
+    }
+
+    function agregarProducto(productoId) {
+        $.post('/carrito/agregar', { productoId: productoId, cantidad: 1 }, function(response) {
+            if (response.success) {
+                actualizarCarrito();
+            } else {
+                alert(response.message);
+            }
+        });
+    }
+
+    function modificarCantidad(productoId, cantidad) {
+        $.post('/carrito/modificar-cantidad', { productoId: productoId, cantidad: cantidad }, function(response) {
+            if (response.success) {
+                actualizarCarrito();
+            } else {
+                alert(response.message);
+            }
+        });
+    }
+
+    function eliminarProducto(productoId) {
+        $.post('/carrito/eliminar', { productoId: productoId }, function(response) {
+            if (response.success) {
+                actualizarCarrito();
+            } else {
+                alert(response.message);
+            }
+        });
+    }
+
+    function limpiarCarrito() {
+        if (confirm('¿Está seguro de limpiar el carrito?')) {
+            $.post('/venta/limpiar-carrito', function() {
+                location.reload();
+            });
+        }
+    }
+
+    function establecerCliente(clienteId, clienteNombre) {
+        $.post('/venta/establecer-cliente', { clienteId: clienteId }, function(response) {
+            if (response.startsWith('success')) {
+                $('#cliente-info p').text(clienteNombre);
+                cerrarModalClientes();
+            } else {
+                alert(response);
+            }
+        });
+    }
+
+    function establecerMetodoPago(metodoId, metodoNombre) {
+        $.post('/venta/establecer-metodo-pago', { metodoPagoId: metodoId }, function(response) {
+            if (response.startsWith('success')) {
+                $('#metodo-pago-info p').text(metodoNombre);
+                cerrarModalMetodosPago();
+            } else {
+                alert(response);
+            }
+        });
+    }
+
+    function actualizarCarrito() {
+        $.get('/venta/fragments/carrito-items', function(data) {
+            $('#carrito-items').html(data);
+        });
+
+        $.get('/carrito/resumen', function(response) {
+            if (response.success) {
+                $('#total-carrito').text(response.total.toFixed(2));
+            }
+        });
+    }
+
+    // Inicializar búsqueda al cargar
+    $(document).ready(function() {
+        buscarProductos();
+    });
+</script>
 </body>
 </html>

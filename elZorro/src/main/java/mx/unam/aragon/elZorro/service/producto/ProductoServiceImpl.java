@@ -41,6 +41,11 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    public List<ProductoEntity> buscarPorNombre(String nombre) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public ProductoEntity findById(Long id) {
         return productoRepository.findById(id).orElse(null);
@@ -50,5 +55,10 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     public void deleteById(Long id) {
         productoRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProductoEntity> buscarPorCategoria(String categoria) {
+        return productoRepository.buscarPorCategoria(categoria);
     }
 }

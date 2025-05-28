@@ -9,6 +9,7 @@ import mx.unam.aragon.elZorro.service.empleado.EmpleadoService;
 import mx.unam.aragon.elZorro.service.metodo_pago.MetodoPagoService;
 import mx.unam.aragon.elZorro.service.producto.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/venta")
 @SessionAttributes("carrito")
+@PreAuthorize("hasRole('CAJA')")
 public class NuevaVentaController {
 
     @Autowired
@@ -53,7 +55,7 @@ public class NuevaVentaController {
         model.addAttribute("metodosPago", metodoPagoService.findAll());
         model.addAttribute("empleados", empleadoService.findAll());
 
-        return "venta/nueva-venta";
+        return "caja/venta/nueva-venta";
     }
 
     /**
@@ -66,7 +68,7 @@ public class NuevaVentaController {
         List<ProductoEntity> productos;
 
         if (busqueda != null && !busqueda.trim().isEmpty()) {
-            productos = productoService.buscarPorNombre(busqueda); // ESTO NO JALARA
+            productos = productoService.buscarPorNombre(busqueda);
         } else if (categoria != null && !categoria.trim().isEmpty()) {
             productos = productoService.buscarPorCategoria(categoria);
         } else {
@@ -79,7 +81,7 @@ public class NuevaVentaController {
                 .collect(Collectors.toList());
 
         model.addAttribute("productos", productosCarrito);
-        return "fragments/buscar-productos :: productos-lista";
+        return "caja/venta/fragments/buscar-productos :: productos-lista";
     }
 
     /**
@@ -94,7 +96,7 @@ public class NuevaVentaController {
         }
 
         model.addAttribute("carrito", carrito);
-        return "fragments/carrito-items :: carrito-contenido";
+        return "caja/venta/fragments/carrito-items :: carrito-contenido";
     }
 
     /**
@@ -119,7 +121,7 @@ public class NuevaVentaController {
 
         model.addAttribute("carrito", carrito);
         model.addAttribute("metodosPago", metodoPagoService.findAll());
-        return "fragments/confirmar-venta :: confirmacion-contenido";
+        return "caja/venta/fragments/confirmar-venta :: confirmacion-contenido";
     }
 
     /**

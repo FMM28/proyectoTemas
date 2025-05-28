@@ -25,5 +25,13 @@ public interface ProductoRepository extends JpaRepository<ProductoEntity,Long> {
     JOIN proveedor pv ON p.proveedor_id = pv.proveedor_id
     """, nativeQuery = true)
     List<Inventario> getInventario();
+
+    @Query(value = """
+    SELECT * FROM producto p 
+    JOIN categoria c ON p.categoria_id = c.categoria_id 
+    WHERE LOWER(c.nombre) = LOWER(?1)
+""", nativeQuery = true)
+    List<ProductoEntity> buscarPorCategoria(String categoria);
     Page<ProductoEntity> findByNombreContainingIgnoreCase(String nombre, Pageable pageable);
+    List<ProductoEntity> findByNombreContainingIgnoreCase(String nombre);
 }

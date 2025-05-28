@@ -10,4 +10,6 @@ import java.util.List;
 public interface DetalleVentaRepository extends JpaRepository<DetalleVentaEntity,Long> {
     @Query(value = "SELECT * FROM detalle_venta WHERE venta_id = :ventaId", nativeQuery = true)
     List<DetalleVentaEntity> findByVenta(@Param("ventaId") Long ventaId);
+
+
 }
