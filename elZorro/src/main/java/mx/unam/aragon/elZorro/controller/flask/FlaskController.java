@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -66,32 +67,50 @@ public class FlaskController {
 
     @PostMapping(value = "/envia_recibo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @PreAuthorize("hasAnyRole('ADMIN','CAJA')")
-    public ResponseEntity<String> enviarRecibo(@RequestParam("id") Long id) {
+    public String enviarRecibo(
+            @RequestParam("id") Long id,
+            RedirectAttributes redirectAttributes) {  // Usamos RedirectAttributes para mensajes flash
+
         try {
+            // Obtener los datos necesarios
             Recibo recibo = reciboService.getRecibo(id);
             VentaEntity venta = ventaService.findById(id);
+
+            // Validar que existe el cliente y correo
+            if (venta.getCliente() == null || venta.getCliente().getCorreo() == null) {
+                redirectAttributes.addFlashAttribute("error", "El cliente no tiene correo electrónico registrado");
+                return "redirect:/venta/venta-exitosa/" + id;
+            }
+
             String correo = venta.getCliente().getCorreo();
 
+            // Generar el PDF del recibo
             ResponseEntity<byte[]> response = requestSender.postToFlask("/api/generar_recibo", recibo);
             byte[] pdfBytes = response.getBody();
 
+            // Obtener nombre del archivo
             String fileName = Optional.ofNullable(response.getHeaders().getContentDisposition())
                     .map(ContentDisposition::getFilename)
                     .orElse("Recibo_" + id + ".pdf");
 
+            // Enviar el correo
             emailService.sendHtmlEmail(
                     correo,
                     "Recibo de Compra #" + id,
-                    "",
+                    "",  // Puedes añadir un template HTML aquí
                     pdfBytes,
                     fileName
             );
 
-            return ResponseEntity.ok("Recibo enviado exitosamente a " + correo);
+            // Mensaje de éxito
+            redirectAttributes.addFlashAttribute("success", "Recibo enviado exitosamente a " + correo);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al enviar recibo: " + e.getMessage());
+            // Mensaje de error
+            redirectAttributes.addFlashAttribute("error", "Error al enviar recibo: " + e.getMessage());
         }
+
+        // Redireccionar a la página de venta exitosa
+        return "redirect:/venta/venta-exitosa/" + id;
     }
 }

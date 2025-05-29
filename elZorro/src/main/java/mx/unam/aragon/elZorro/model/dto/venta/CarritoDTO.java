@@ -18,13 +18,17 @@ public class CarritoDTO {
     // Constructor básico
     public CarritoDTO(Long empleadoId) {
         this.ventaInfo = new VentaDTO(empleadoId);
-        this.detalles = new ArrayList<>();
+        this.detalles = new ArrayList<>(); // Inicializar la lista
         this.total = 0.0;
         this.cantidadTotalItems = 0;
     }
 
     // Agregar producto al carrito
     public boolean agregarProducto(ProductoCarritoDTO producto, Integer cantidad) {
+
+        if (this.detalles == null) {
+            this.detalles = new ArrayList<>();
+        }
         // Validar stock
         if (!producto.tieneStockSuficiente(cantidad)) {
             return false;
@@ -93,6 +97,9 @@ public class CarritoDTO {
 
     // Recalcular totales del carrito
     public void recalcularTotales() {
+        if (this.detalles == null) {
+            this.detalles = new ArrayList<>();
+        }
         BigDecimal totalCalculado = BigDecimal.ZERO;
         Integer cantidadTotal = 0;
 
@@ -116,7 +123,7 @@ public class CarritoDTO {
 
     // Verificar si el carrito está vacío
     public boolean estaVacio() {
-        return detalles.isEmpty();
+        return detalles == null || detalles.isEmpty();
     }
 
     // Obtener cantidad de un producto específico

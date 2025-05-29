@@ -22,7 +22,14 @@ public class CorteCajaController {
 
     @GetMapping("/corte")
     public String corte(Model model) {
-        model.addAttribute("mainContent", "corte/corte-caja");
+        model.addAttribute("mainContent", "corte/abrir-corte");
         return "common/layout";
     }
+
+    @PostMapping("/iniciar")
+    public String iniciar(){
+        //solo inicializar el registro de corte de caja de este momento
+        return "redirect:/caja/corte";
+    }
+
 }

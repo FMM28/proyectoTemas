@@ -14,173 +14,85 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/venta")
-@PreAuthorize("hasRole('CAJA')")
+@SessionAttributes("carrito")
 public class ProcesarVentaController {
 
     @Autowired
     private VentaService ventaService;
 
-    /**
-     * Procesar la venta (confirmar y guardar)
-     */
     @PostMapping("/procesar")
-    public String procesarVenta(HttpSession session,
-                                RedirectAttributes redirectAttributes,
-                                SessionStatus sessionStatus) {
-        try {
-            // Obtener carrito de la sesión
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
+    public String procesarVenta(
+            @ModelAttribute("carrito") CarritoDTO carrito,
+            SessionStatus sessionStatus,
+            RedirectAttributes redirectAttributes,
+            HttpSession session) { // Añade HttpSession
 
+        try {
+            // Validación más robusta
             if (carrito == null || carrito.estaVacio()) {
-                redirectAttributes.addFlashAttribute("error",
-                        "No hay productos en el carrito para procesar");
+                redirectAttributes.addFlashAttribute("error", "El carrito está vacío o no se ha inicializado");
                 return "redirect:/venta/nueva-venta";
             }
 
-            // Validar carrito antes de procesar
+            // Asegurar que detalles no sea null
+            if (carrito.getDetalles() == null) {
+                carrito.setDetalles(new ArrayList<>());
+            }
+
             if (!ventaService.validarVenta(carrito)) {
                 String errores = ventaService.obtenerErroresValidacion(carrito);
-                redirectAttributes.addFlashAttribute("error",
-                        "Error en la validación: " + errores);
+                redirectAttributes.addFlashAttribute("error", errores);
                 return "redirect:/venta/nueva-venta";
             }
-            System.out.println(carrito);
 
-            // Procesar la venta
             VentaEntity ventaProcesada = ventaService.procesarVenta(carrito);
 
-            // Limpiar sesión después del procesamiento exitoso
+            // Limpiar la sesión completamente
             sessionStatus.setComplete();
+            session.removeAttribute("carrito");
 
-            // Redirigir a venta exitosa con los datos
             redirectAttributes.addFlashAttribute("ventaExitosa", ventaProcesada);
-            redirectAttributes.addFlashAttribute("mensaje",
-                    "¡Venta procesada exitosamente!");
-
             return "redirect:/venta/venta-exitosa/" + ventaProcesada.getId();
 
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Error de validación: " + e.getMessage());
-            return "redirect:/venta/nueva-venta";
-
-        } catch (IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Error de stock: " + e.getMessage());
-            return "redirect:/venta/nueva-venta";
-
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace(); // Mejor logging
             redirectAttributes.addFlashAttribute("error",
                     "Error al procesar la venta: " + e.getMessage());
             return "redirect:/venta/nueva-venta";
         }
     }
 
-    /**
-     * Validación previa antes de mostrar confirmación
-     */
-    @PostMapping("/validar-para-procesar")
-    @ResponseBody
-    public Map<String, Object> validarParaProcesar(HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
 
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-
-            if (carrito == null || carrito.estaVacio()) {
-                response.put("valido", false);
-                response.put("mensaje", "El carrito está vacío");
-                return response;
-            }
-
-            // Usar el servicio para validar
-            boolean esValido = ventaService.validarVenta(carrito);
-            response.put("valido", esValido);
-
-            if (!esValido) {
-                String errores = ventaService.obtenerErroresValidacion(carrito);
-                response.put("mensaje", errores);
-            } else {
-                response.put("mensaje", "Carrito válido para procesar");
-            }
-
-        } catch (Exception e) {
-            response.put("valido", false);
-            response.put("mensaje", "Error en validación: " + e.getMessage());
-        }
-
-        return response;
-    }
-
-    /**
-     * Vista de venta exitosa
-     */
     @GetMapping("/venta-exitosa/{ventaId}")
     public String ventaExitosa(@PathVariable Long ventaId, Model model) {
-        try {
-            VentaEntity venta = ventaService.findById(ventaId);
-
-            if (venta == null) {
-                model.addAttribute("error", "Venta no encontrada");
-                return "redirect:/venta/nueva-venta";
-            }
-
-            List<DetalleVentaEntity> detalles = ventaService.obtenerDetallesPorVenta(ventaId);
-
-            // Calcular el total multiplicando cantidad * precioUnitario y sumando todo
-            BigDecimal total = detalles.stream()
-                    .map(detalle -> BigDecimal.valueOf(detalle.getPrecioUnitario()).multiply(BigDecimal.valueOf(detalle.getCantidad())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            model.addAttribute("venta", venta);
-            model.addAttribute("Mitotal", total);
-            model.addAttribute("detalles", detalles);
-
-            return "caja/venta/venta-exitosa";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error al cargar los datos de la venta");
+        VentaEntity venta = ventaService.findById(ventaId);
+        if (venta == null) {
             return "redirect:/venta/nueva-venta";
         }
+
+        List<DetalleVentaEntity> detalles = ventaService.obtenerDetallesPorVenta(ventaId);
+        BigDecimal total = calcularTotal(detalles);
+
+        model.addAttribute("venta", venta);
+        model.addAttribute("detalles", detalles);
+        model.addAttribute("total", total);
+
+        // Cambia a esto (sin especificar parámetros en el fragmento)
+        model.addAttribute("mainContent", "caja/venta/venta-exitosa");
+
+        return "common/layout";
     }
 
-    /**
-     * Verificar stock en tiempo real antes de procesar
-     */
-    @PostMapping("/verificar-stock")
-    @ResponseBody
-    public Map<String, Object> verificarStock(HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-
-            if (carrito == null || carrito.estaVacio()) {
-                response.put("stockValido", false);
-                response.put("mensaje", "Carrito vacío");
-                return response;
-            }
-
-            boolean stockDisponible = ventaService.verificarStockDisponible(carrito);
-            response.put("stockValido", stockDisponible);
-
-            if (!stockDisponible) {
-                response.put("mensaje", "Algunos productos no tienen stock suficiente");
-            } else {
-                response.put("mensaje", "Stock disponible para todos los productos");
-            }
-
-        } catch (Exception e) {
-            response.put("stockValido", false);
-            response.put("mensaje", "Error al verificar stock: " + e.getMessage());
-        }
-
-        return response;
+    private BigDecimal calcularTotal(List<DetalleVentaEntity> detalles) {
+        return detalles.stream()
+                .map(d -> BigDecimal.valueOf(d.getPrecioUnitario()).multiply(BigDecimal.valueOf(d.getCantidad())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

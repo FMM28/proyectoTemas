@@ -13,9 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/venta")
@@ -24,183 +27,118 @@ public class NuevaVentaController {
 
     @Autowired
     private ProductoService productoService;
-
     @Autowired
     private ClienteService clienteService;
-
     @Autowired
     private EmpleadoService empleadoService;
-
     @Autowired
     private MetodoPagoService metodoPagoService;
+    @Autowired
+    private CarritoController carritoController;
 
-    /**
-     * Mostrar la vista principal de nueva venta
-     */
+    @ModelAttribute("carrito")
+    public CarritoDTO carrito() {
+        return new CarritoDTO(1L); // ID empleado por defecto (debería ser del usuario logueado)
+    }
+
     @GetMapping("/nueva-venta")
-    public String mostrarNuevaVenta(Model model, HttpSession session) {
-        // Inicializar carrito si no existe
-        CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-        if (carrito == null) {
-            // Por defecto, usar empleado ID 1 (esto debería venir del usuario logueado)
-            carrito = new CarritoDTO(1L);
-            session.setAttribute("carrito", carrito);
+    public String mostrarVenta(
+            @ModelAttribute("carrito") CarritoDTO carrito,
+            @RequestParam(required = false) String busqueda,
+            @RequestParam(required = false) String categoria,
+            Model model) {
+        if (carrito.getDetalles() == null) {
+            carrito.setDetalles(new ArrayList<>());
         }
-
         // Cargar datos necesarios para la vista
-        model.addAttribute("carrito", carrito);
-        model.addAttribute("clientes", clienteService.findAll());
-        model.addAttribute("metodosPago", metodoPagoService.findAll());
-        model.addAttribute("empleados", empleadoService.findAll());
+        cargarDatosVista(model, carrito, busqueda, categoria);
         model.addAttribute("mainContent", "caja/venta/nueva-venta");
 
         return "common/layout";
     }
 
-    /**
-     * Fragment: Buscar productos
-     */
-    @GetMapping("/fragments/buscar-productos")
-    public String buscarProductos(@RequestParam(required = false) String busqueda,
-                                  @RequestParam(required = false) String categoria,
-                                  Model model) {
-        List<ProductoEntity> productos;
-
-        if (busqueda != null && !busqueda.trim().isEmpty()) {
-            productos = productoService.buscarPorNombre(busqueda); // ESTO NO JALARA
-        } else if (categoria != null && !categoria.trim().isEmpty()) {
-            productos = productoService.buscarPorCategoria(categoria);
-        } else {
-            productos = productoService.findAll();
-        }
-
-        // Convertir a ProductoCarritoDTO para la vista
-        List<ProductoCarritoDTO> productosCarrito = productos.stream()
-                .map(ProductoCarritoDTO::new)
-                .collect(Collectors.toList());
-
-        model.addAttribute("productos", productosCarrito);
-        return "caja/venta/fragments/buscar-productos :: productos-lista";
-    }
-
-    /**
-     * Fragment: Items del carrito
-     */
-    @GetMapping("/fragments/carrito-items")
-    public String carritoItems(Model model, HttpSession session) {
-        CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-        if (carrito == null) {
-            carrito = new CarritoDTO(1L);
-            session.setAttribute("carrito", carrito);
-        }
-
-        model.addAttribute("carrito", carrito);
-        return "caja/venta/fragments/carrito-items :: carrito-contenido";
-    }
-
-    /**
-     * Fragment: Seleccionar cliente
-     */
-    @GetMapping("/fragments/seleccionar-cliente")
-    public String seleccionarCliente(Model model) {
-        model.addAttribute("clientes", clienteService.findAll());
-        return "fragments/seleccionar-cliente :: clientes-lista";
-    }
-
-    /**
-     * Fragment: Confirmar venta
-     */
-    @GetMapping("/fragments/confirmar-venta")
-    public String confirmarVenta(Model model, HttpSession session) {
-        CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-        if (carrito == null || carrito.estaVacio()) {
-            model.addAttribute("error", "El carrito está vacío");
-            return "caja/venta/fragments/confirmar-venta :: confirmacion-error";
-        }
-
-        model.addAttribute("carrito", carrito);
-        model.addAttribute("metodosPago", metodoPagoService.findAll());
-        return "caja/venta/fragments/confirmar-venta :: confirmacion-contenido";
-    }
-
-    /**
-     * Establecer cliente para la venta
-     */
     @PostMapping("/establecer-cliente")
-    @ResponseBody
-    public String establecerCliente(@RequestParam Long clienteId,
-                                    HttpSession session) {
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                return "error:Carrito no encontrado";
-            }
+    public String establecerCliente(
+            @ModelAttribute("carrito") CarritoDTO carrito,
+            @RequestParam Long clienteId,
+            RedirectAttributes redirectAttributes) {
 
-            var cliente = clienteService.findById(clienteId);
-            if (cliente.isPresent()) {
-                carrito.getVentaInfo().establecerCliente(
-                        clienteId,
-                        cliente.get().getNombre() + " " + cliente.get().getApellidoPaterno() + " " + cliente.get().getApellidoMaterno()
-                );
-                session.setAttribute("carrito", carrito);
-                return "success:Cliente establecido correctamente";
-            } else {
-                return "error:Cliente no encontrado";
-            }
-        } catch (Exception e) {
-            return "error:" + e.getMessage();
-        }
+        clienteService.findById(clienteId).ifPresent(cliente -> {
+            carrito.getVentaInfo().establecerCliente(
+                    clienteId,
+                    cliente.getNombre() + cliente.getApellidoPaterno() + cliente.getApellidoMaterno()
+            );
+        });
+
+        redirectAttributes.addFlashAttribute("mensaje", "Cliente establecido correctamente");
+        return "redirect:/venta/nueva-venta";
     }
 
-    /**
-     * Establecer método de pago
-     */
     @PostMapping("/establecer-metodo-pago")
-    @ResponseBody
-    public String establecerMetodoPago(@RequestParam Long metodoPagoId,
-                                       HttpSession session) {
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                return "error:Carrito no encontrado";
-            }
+    public String establecerMetodoPago(
+            @ModelAttribute("carrito") CarritoDTO carrito,
+            @RequestParam(required = false) Long metodoPagoId, // Hacerlo opcional
+            RedirectAttributes redirectAttributes) {
 
-            var metodoPago = metodoPagoService.findById(metodoPagoId);
-            if (metodoPago != null) {
-                carrito.getVentaInfo().establecerMetodoPago(
-                        metodoPagoId,
-                        metodoPago.getNombre()
-                );
-                session.setAttribute("carrito", carrito);
-                return "success:Método de pago establecido correctamente";
-            } else {
-                return "error:Método de pago no encontrado";
-            }
-        } catch (Exception e) {
-            return "error:" + e.getMessage();
+        if (metodoPagoId == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe seleccionar un método de pago válido");
+            return "redirect:/venta/nueva-venta";
         }
-    }
 
-    /**
-     * Limpiar carrito y empezar nueva venta
-     */
-    @PostMapping("/limpiar-carrito")
-    public String limpiarCarrito(HttpSession session, SessionStatus status) {
-        CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-        if (carrito != null) {
-            carrito.limpiar();
-            session.setAttribute("carrito", carrito);
+        var metodoPago = metodoPagoService.findById(metodoPagoId);
+        if (metodoPago != null) {
+            carrito.getVentaInfo().establecerMetodoPago(
+                    metodoPagoId,
+                    metodoPago.getNombre()
+            );
+            redirectAttributes.addFlashAttribute("mensaje", "Método de pago establecido");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Método de pago no encontrado");
         }
 
         return "redirect:/venta/nueva-venta";
     }
 
-    /**
-     * Cancelar venta y limpiar sesión
-     */
+    @PostMapping("/limpiar-carrito")
+    public String limpiarCarrito(
+            @ModelAttribute("carrito") CarritoDTO carrito,
+            SessionStatus status) {
+
+        carrito.limpiar();
+        status.setComplete();
+        return "redirect:/venta/nueva-venta";
+    }
+
     @PostMapping("/cancelar")
     public String cancelarVenta(SessionStatus status) {
-        status.setComplete(); // Limpia todos los atributos de sesión
+        status.setComplete();
         return "redirect:/venta/nueva-venta";
+    }
+
+    private void cargarDatosVista(Model model, CarritoDTO carrito, String busqueda, String categoria) {
+        // Productos según búsqueda/categoría
+        List<ProductoEntity> productos = obtenerProductosFiltrados(busqueda, categoria);
+        List<ProductoCarritoDTO> productosCarrito = convertirADTO(productos);
+
+        model.addAttribute("carrito", carrito);
+        model.addAttribute("productos", productosCarrito);
+        model.addAttribute("clientes", clienteService.findAll());
+        model.addAttribute("metodosPago", metodoPagoService.findAll());
+        model.addAttribute("empleados", empleadoService.findAll());
+    }
+
+    private List<ProductoEntity> obtenerProductosFiltrados(String busqueda, String categoria) {
+        if (busqueda != null && !busqueda.trim().isEmpty()) {
+            return productoService.buscarPorNombre(busqueda);
+        } else if (categoria != null && !categoria.trim().isEmpty()) {
+            return productoService.buscarPorCategoria(categoria);
+        }
+        return productoService.findAll();
+    }
+
+    private List<ProductoCarritoDTO> convertirADTO(List<ProductoEntity> productos) {
+        return productos.stream()
+                .map(ProductoCarritoDTO::new)
+                .collect(Collectors.toList());
     }
 }

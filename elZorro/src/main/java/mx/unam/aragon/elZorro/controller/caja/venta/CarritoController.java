@@ -10,257 +10,106 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/carrito")
-@PreAuthorize("hasRole('CAJA')")
+@SessionAttributes("carrito") // Añadir esta anotación
 public class CarritoController {
 
     @Autowired
     private ProductoService productoService;
 
-    /**
-     * Agregar producto al carrito
-     */
+    // Asegurar que el carrito se inicialice si no existe
+    @ModelAttribute("carrito")
+    public CarritoDTO getCarrito() {
+        return new CarritoDTO(1L); // 1L sería el ID del empleado (debería ser dinámico)
+    }
+
     @PostMapping("/agregar")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> agregarProducto(
+    public String agregarProducto(
+            @ModelAttribute("carrito") CarritoDTO carrito,
             @RequestParam Long productoId,
             @RequestParam Integer cantidad,
-            HttpSession session) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) { // Añadir HttpSession
 
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            // Obtener carrito de la sesión
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                carrito = new CarritoDTO(1L); // ID por defecto del empleado
-                session.setAttribute("carrito", carrito);
-            }
-
-            // Buscar el producto
-            ProductoEntity producto = productoService.findById(productoId);
-            if (producto == null) {
-                response.put("success", false);
-                response.put("message", "Producto no encontrado");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            // Convertir a ProductoCarritoDTO
-            ProductoCarritoDTO productoCarrito = new ProductoCarritoDTO(producto);
-
-            // Agregar al carrito
-            boolean agregado = carrito.agregarProducto(productoCarrito, cantidad);
-
-            if (agregado) {
-                session.setAttribute("carrito", carrito);
-                response.put("success", true);
-                response.put("message", "Producto agregado correctamente");
-                response.put("totalItems", carrito.getCantidadTotalItems());
-                response.put("total", carrito.getTotal());
-                response.put("resumen", carrito.getResumen());
-            } else {
-                response.put("success", false);
-                response.put("message", "No hay stock suficiente");
-            }
-
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error al agregar producto: " + e.getMessage());
+        // Verificar inicialización
+        if (carrito.getDetalles() == null) {
+            carrito.setDetalles(new ArrayList<>());
         }
 
-        return ResponseEntity.ok(response);
+        ProductoEntity producto = productoService.findById(productoId);
+        if (producto == null) {
+            redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
+            return "redirect:/venta/nueva-venta";
+        }
+
+        ProductoCarritoDTO productoCarrito = new ProductoCarritoDTO(producto);
+        boolean agregado = carrito.agregarProducto(productoCarrito, cantidad);
+
+        if (agregado) {
+            // Actualizar el carrito en la sesión
+            session.setAttribute("carrito", carrito);
+            redirectAttributes.addFlashAttribute("mensaje", "Producto agregado al carrito");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "No hay stock suficiente");
+        }
+
+        return "redirect:/venta/nueva-venta";
     }
 
-    /**
-     * Modificar cantidad de un producto en el carrito
-     */
+    // Los demás métodos permanecen igual, pero añade HttpSession y verifica inicialización
     @PostMapping("/modificar-cantidad")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> modificarCantidad(
+    public String modificarCantidad(
+            @ModelAttribute("carrito") CarritoDTO carrito,
             @RequestParam Long productoId,
             @RequestParam Integer cantidad,
+            RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                response.put("success", false);
-                response.put("message", "Carrito no encontrado");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            boolean modificado = carrito.modificarCantidad(productoId, cantidad);
-
-            if (modificado) {
-                session.setAttribute("carrito", carrito);
-                response.put("success", true);
-                response.put("message", "Cantidad modificada correctamente");
-                response.put("totalItems", carrito.getCantidadTotalItems());
-                response.put("total", carrito.getTotal());
-                response.put("resumen", carrito.getResumen());
-            } else {
-                response.put("success", false);
-                response.put("message", "No se pudo modificar la cantidad. Verifique el stock disponible");
-            }
-
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error al modificar cantidad: " + e.getMessage());
+        if (carrito.getDetalles() == null) {
+            redirectAttributes.addFlashAttribute("error", "Carrito no inicializado");
+            return "redirect:/venta/nueva-venta";
         }
 
-        return ResponseEntity.ok(response);
+        boolean modificado = carrito.modificarCantidad(productoId, cantidad);
+
+        if (modificado) {
+            session.setAttribute("carrito", carrito);
+            redirectAttributes.addFlashAttribute("mensaje", "Cantidad actualizada");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "No se pudo modificar la cantidad");
+        }
+
+        return "redirect:/venta/nueva-venta";
     }
 
-    /**
-     * Eliminar producto del carrito
-     */
     @PostMapping("/eliminar")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> eliminarProducto(
+    public String eliminarProducto(
+            @ModelAttribute("carrito") CarritoDTO carrito,
             @RequestParam Long productoId,
+            RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                response.put("success", false);
-                response.put("message", "Carrito no encontrado");
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            boolean eliminado = carrito.eliminarProducto(productoId);
-
-            if (eliminado) {
-                session.setAttribute("carrito", carrito);
-                response.put("success", true);
-                response.put("message", "Producto eliminado correctamente");
-                response.put("totalItems", carrito.getCantidadTotalItems());
-                response.put("total", carrito.getTotal());
-                response.put("resumen", carrito.getResumen());
-            } else {
-                response.put("success", false);
-                response.put("message", "No se pudo eliminar el producto");
-            }
-
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error al eliminar producto: " + e.getMessage());
+        if (carrito.getDetalles() == null) {
+            redirectAttributes.addFlashAttribute("error", "Carrito no inicializado");
+            return "redirect:/venta/nueva-venta";
         }
 
-        return ResponseEntity.ok(response);
-    }
+        boolean eliminado = carrito.eliminarProducto(productoId);
 
-    /**
-     * Obtener resumen del carrito (para actualizar UI)
-     */
-    @GetMapping("/resumen")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> obtenerResumen(HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                carrito = new CarritoDTO(1L);
-                session.setAttribute("carrito", carrito);
-            }
-
-            response.put("success", true);
-            response.put("totalItems", carrito.getCantidadTotalItems());
-            response.put("total", carrito.getTotal());
-            response.put("resumen", carrito.getResumen());
-            response.put("vacio", carrito.estaVacio());
-            response.put("validoParaProcesar", carrito.esValidoParaProcesar());
-
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error al obtener resumen: " + e.getMessage());
+        if (eliminado) {
+            session.setAttribute("carrito", carrito);
+            redirectAttributes.addFlashAttribute("mensaje", "Producto eliminado");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "No se pudo eliminar el producto");
         }
 
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Validar carrito antes de procesar
-     */
-    @GetMapping("/validar")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> validarCarrito(HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                response.put("valido", false);
-                response.put("errores", "Carrito no encontrado");
-                return ResponseEntity.ok(response);
-            }
-
-            boolean valido = carrito.esValidoParaProcesar();
-            response.put("valido", valido);
-
-            if (!valido) {
-                StringBuilder errores = new StringBuilder();
-
-                if (carrito.estaVacio()) {
-                    errores.append("El carrito está vacío. ");
-                }
-
-                if (carrito.getVentaInfo().getEmpleadoId() == null) {
-                    errores.append("No se ha establecido el empleado. ");
-                }
-
-                if (carrito.getVentaInfo().getMetodoPagoId() == null) {
-                    errores.append("No se ha establecido el método de pago. ");
-                }
-
-                response.put("errores", errores.toString());
-            }
-
-        } catch (Exception e) {
-            response.put("valido", false);
-            response.put("errores", "Error al validar carrito: " + e.getMessage());
-        }
-
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Obtener cantidad de un producto específico en el carrito
-     */
-    @GetMapping("/cantidad-producto")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> obtenerCantidadProducto(
-            @RequestParam Long productoId,
-            HttpSession session) {
-
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            CarritoDTO carrito = (CarritoDTO) session.getAttribute("carrito");
-            if (carrito == null) {
-                response.put("cantidad", 0);
-            } else {
-                response.put("cantidad", carrito.getCantidadProducto(productoId));
-            }
-
-            response.put("success", true);
-
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Error al obtener cantidad: " + e.getMessage());
-            response.put("cantidad", 0);
-        }
-
-        return ResponseEntity.ok(response);
+        return "redirect:/venta/nueva-venta";
     }
 }
