@@ -75,4 +75,10 @@ public class EmpleadoServiceImpl implements EmpleadoService {
         return empleadoRepository.findByNombreContainingIgnoreCaseOrApellidoPaternoContainingIgnoreCaseOrApellidoMaternoContainingIgnoreCase(
                 nombre, nombre, nombre, pageable);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EmpleadoEntity findByUsername(String username) {
+        return empleadoRepository.findByUsuario(username);
+    }
 }

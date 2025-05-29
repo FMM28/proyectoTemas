@@ -68,10 +68,19 @@
                        class="text-blue-600 hover:text-blue-900 mr-4">
                         Editar
                     </a>
-                    <a href=""
-                       class="text-blue-600 hover:text-blue-900 mr-4">
-                        Estatus pedido: Sin ordenar (orden de compra Controller)
-                    </a>
+                    <form th:action="@{/administracion/compras/solicitar-pedido}"
+                          method="post"
+                          class="inline-block"
+                          th:object="${producto}">
+                        <input type="hidden" name="productoId" th:value="${producto.id}">
+                        <input type="number" name="cantidad" min="1"
+                               class="w-20 p-1 border border-gray-300 rounded mr-2"
+                               placeholder="Cantidad" required>
+                        <button type="submit"
+                                class="text-blue-600 hover:text-blue-900">
+                            Pedir más
+                        </button>
+                    </form>
                 </td>
             </tr>
             </tbody>

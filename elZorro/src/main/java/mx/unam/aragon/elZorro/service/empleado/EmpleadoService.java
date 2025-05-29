@@ -15,4 +15,5 @@ public interface EmpleadoService {
     EmpleadoEntity crearEmpleado(String nombre, String apellidoPaterno, String apellidoMaterno, String usuario, String passwordPlano, RolEntity rol);
     Page<EmpleadoEntity> findAllPaginated(Pageable pageable);
     Page<EmpleadoEntity> buscarPorNombre(String nombre, Pageable pageable);
+    EmpleadoEntity findByUsername(String username);
 }

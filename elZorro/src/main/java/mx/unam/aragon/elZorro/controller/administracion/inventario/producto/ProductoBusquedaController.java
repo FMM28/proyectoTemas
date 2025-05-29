@@ -1,6 +1,7 @@
 package mx.unam.aragon.elZorro.controller.administracion.inventario.producto;
 
 import mx.unam.aragon.elZorro.model.entity.ProductoEntity;
+import mx.unam.aragon.elZorro.service.orden_proveedor.OrdenProveedorService;
 import mx.unam.aragon.elZorro.service.producto.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ProductoBusquedaController {
 
     private static final int PAGE_SIZE = 10; // Productos por página
+    @Autowired
+    private OrdenProveedorService ordenProveedorService;
 
     @Autowired
     private ProductoService productoService;

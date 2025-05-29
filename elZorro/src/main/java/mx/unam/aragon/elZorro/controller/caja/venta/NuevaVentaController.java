@@ -52,8 +52,9 @@ public class NuevaVentaController {
         model.addAttribute("clientes", clienteService.findAll());
         model.addAttribute("metodosPago", metodoPagoService.findAll());
         model.addAttribute("empleados", empleadoService.findAll());
+        model.addAttribute("mainContent", "caja/venta/nueva-venta");
 
-        return "caja/venta/nueva-venta";
+        return "common/layout";
     }
 
     /**
