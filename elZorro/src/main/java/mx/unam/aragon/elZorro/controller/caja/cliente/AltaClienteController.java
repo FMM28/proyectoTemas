@@ -28,6 +28,7 @@ public class AltaClienteController {
     @GetMapping("/alta-cliente")
     public String mostrarFormularioCliente(Model model) {
         model.addAttribute("cliente", new ClienteEntity());
+        model.addAttribute("activePage", "caja");
         model.addAttribute("mainContent", "cliente/alta_cliente");
         return "common/layout";
     }

@@ -52,6 +52,8 @@ public class ProcesarVentaController {
                 return "redirect:/venta/nueva-venta";
             }
 
+            System.out.println(carrito);
+
             VentaEntity ventaProcesada = ventaService.procesarVenta(carrito);
 
             // Limpiar la sesión completamente

@@ -1,9 +1,58 @@
-<div th:fragment="sidebar" class="w-56 bg-white h-full border-r border-gray-300 pt-4 shadow-md">
-    <ul class="space-y-2">
-        <li><a href="/administracion" class="block px-4 py-2 hover:bg-gray-100 border-l-4 border-zorroDark">Inicio</a></li>
-        <li><a href="/administracion/proveedor/buscar" class="block px-4 py-2 hover:bg-gray-100 border-l-4 border-transparent hover:border-zorroRed">Proveedores</a></li>
-        <li><a href="/administracion/inventario/categoria/lista" class="block px-4 py-2 hover:bg-gray-100 border-l-4 border-transparent hover:border-zorroRed">Categorias</a></li>
-        <li><a href="/administracion/inventario/producto/lista" class="block px-4 py-2 hover:bg-gray-100 border-l-4 border-transparent hover:border-zorroRed">Productos</a></li>
-        <li><a href="/administracion/empleado/lista" class="block px-4 py-2 hover:bg-gray-100 border-l-4 border-transparent hover:border-zorroRed">Empleados</a></li>
-    </ul>
+<div th:fragment="sidebar" class="w-56 bg-white h-full border-r border-gray-200 pt-6 shadow-md">
+    <nav class="flex flex-col space-y-1 px-3">
+        <a href="/administracion"
+           class="flex items-center px-4 py-2 rounded-md text-gray-700 font-medium hover:bg-zorroRed/10 hover:text-zorroRed transition">
+            <!-- Icono de Inicio -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-zorroRed" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"/>
+            </svg>
+            Inicio
+        </a>
+
+        <a href="/administracion/proveedor/buscar"
+           class="flex items-center px-4 py-2 rounded-md text-gray-700 font-medium hover:bg-zorroRed/10 hover:text-zorroRed transition">
+            <!-- Icono de Proveedores -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-zorroRed" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M5.121 17.804A13.937 13.937 0 0112 15c2.485 0 4.779.64 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Proveedores
+        </a>
+
+        <a href="/administracion/inventario/categoria/lista"
+           class="flex items-center px-4 py-2 rounded-md text-gray-700 font-medium hover:bg-zorroRed/10 hover:text-zorroRed transition">
+            <!-- Icono de Categorías -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-zorroRed" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+            Categorías
+        </a>
+
+        <a href="/administracion/inventario/producto/lista"
+           class="flex items-center px-4 py-2 rounded-md text-gray-700 font-medium hover:bg-zorroRed/10 hover:text-zorroRed transition">
+            <!-- Icono de Productos -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-zorroRed" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 13V6a2 2 0 00-2-2h-3V2H9v2H6a2 2 0 00-2 2v7m16 0v7a2 2 0 01-2 2h-3v-2H9v2H6a2 2 0 01-2-2v-7"/>
+            </svg>
+            Productos
+        </a>
+
+        <a href="/administracion/empleado/lista"
+           class="flex items-center px-4 py-2 rounded-md text-gray-700 font-medium hover:bg-zorroRed/10 hover:text-zorroRed transition">
+            <!-- Icono de Empleados -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-zorroRed" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M4 20h5v-2a4 4 0 00-3-3.87M15 11a3 3 0 10-6 0 3 3 0 006 0z"/>
+            </svg>
+            Empleados
+        </a>
+    </nav>
 </div>

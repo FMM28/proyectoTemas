@@ -4,10 +4,13 @@ import jakarta.servlet.http.HttpSession;
 import mx.unam.aragon.elZorro.model.dto.venta.CarritoDTO;
 import mx.unam.aragon.elZorro.model.dto.venta.ProductoCarritoDTO;
 import mx.unam.aragon.elZorro.model.entity.ProductoEntity;
+import mx.unam.aragon.elZorro.service.empleado.EmpleadoService;
 import mx.unam.aragon.elZorro.service.producto.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,15 +22,21 @@ import java.util.Map;
 @Controller
 @RequestMapping("/carrito")
 @SessionAttributes("carrito") // Añadir esta anotación
+@PreAuthorize("hasRole('CAJA')")
 public class CarritoController {
 
     @Autowired
     private ProductoService productoService;
+    @Autowired
+    private EmpleadoService empleadoService;
 
     // Asegurar que el carrito se inicialice si no existe
     @ModelAttribute("carrito")
     public CarritoDTO getCarrito() {
-        return new CarritoDTO(1L); // 1L sería el ID del empleado (debería ser dinámico)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        Long empleadoId = empleadoService.findByUsername(username).getId(); // Método hipotético
+        return new CarritoDTO(empleadoId);
     }
 
     @PostMapping("/agregar")

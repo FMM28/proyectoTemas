@@ -9,6 +9,9 @@ import mx.unam.aragon.elZorro.service.empleado.EmpleadoService;
 import mx.unam.aragon.elZorro.service.metodo_pago.MetodoPagoService;
 import mx.unam.aragon.elZorro.service.producto.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/venta")
 @SessionAttributes("carrito")
+@PreAuthorize("hasRole('CAJA')")
 public class NuevaVentaController {
 
     @Autowired
@@ -38,7 +42,10 @@ public class NuevaVentaController {
 
     @ModelAttribute("carrito")
     public CarritoDTO carrito() {
-        return new CarritoDTO(1L); // ID empleado por defecto (debería ser del usuario logueado)
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        Long empleadoId = empleadoService.findByUsername(username).getId(); // Método hipotético
+        return new CarritoDTO(empleadoId);
     }
 
     @GetMapping("/nueva-venta")
