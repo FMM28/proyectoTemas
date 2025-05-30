@@ -1,6 +1,7 @@
 package mx.unam.aragon.elZorro.controller.administracion.proveedor;
 
 import jakarta.validation.Valid;
+import mx.unam.aragon.elZorro.converter.UpperConverter;
 import mx.unam.aragon.elZorro.model.entity.ProveedorEntity;
 import mx.unam.aragon.elZorro.model.enums.EstatusProveedor;
 import mx.unam.aragon.elZorro.model.enums.RegimenFiscal;
@@ -80,6 +81,7 @@ public class ProveedorAltaController {
 
     @InitBinder("proveedor")
     public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class,"rfc", new UpperConverter());
         binder.addValidators(proveedorValidator);
     }
 }
