@@ -1,0 +1,74 @@
+<div th:fragment="caja-abierta" class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-zorroDark mb-6">Caja Abierta</h2>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success != null}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6">
+        <span th:text="${success}"></span>
+    </div>
+
+    <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-green-700">
+                    La caja está abierta desde el <span th:text="${#temporals.format(fechaApertura, 'dd/MM/yyyy')}"></span>.
+                    El inventario inicial ha sido registrado correctamente.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900">Empleado</h3>
+            <p class="mt-1 text-sm text-gray-500" th:text="${empleado.nombre + ' ' + empleado.apellidoPaterno + ' ' + empleado.apellidoMaterno}"></p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900">Fecha de Apertura</h3>
+            <p class="mt-1 text-sm text-gray-500" th:text="${#temporals.format(fechaApertura, 'dd/MM/yyyy')}"></p>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900">Estado</h3>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Activa
+            </span>
+        </div>
+    </div>
+
+    <!-- Información de las operaciones -->
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700">
+                    <strong>Operaciones disponibles:</strong> Mientras la caja esté abierta, puedes realizar ventas normalmente.
+                    Al cerrar la caja se generará un reporte completo del movimiento de inventario.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-col sm:flex-row gap-4">
+        <form th:action="@{/caja/cerrar}" method="post" class="flex-1">
+            <button type="submit"
+                    class="w-full bg-zorroRed text-white px-6 py-3 rounded-md hover:bg-zorroDark transition-colors font-medium"
+                    onclick="return confirm('¿Estás seguro que deseas cerrar la caja? Esta acción generará el reporte final de inventario.')">
+                Cerrar Caja y Generar Reporte
+            </button>
+        </form>
+
+        <a th:href="@{/ventas}"
+           class="flex-1 bg-gray-100 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-200 transition-colors font-medium text-center">
+            Ir a Ventas
+        </a>
+    </div>
+</div>

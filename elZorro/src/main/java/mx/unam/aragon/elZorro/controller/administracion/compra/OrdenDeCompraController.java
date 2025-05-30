@@ -57,16 +57,18 @@ public class OrdenDeCompraController {
         EmpleadoEntity empleado = empleadoService.findByUsername(username);
 
 
-        // Crear el mensaje del correo
         String asunto = "Solicitud de pedido - Producto: " + producto.getNombre();
         String mensaje = String.format(
                 "Se le solicita el siguiente pedido:\n\n" +
                         "Producto: %s\n" +
                         "Cantidad: %d\n" +
-                        "Solicitado por: %s\n\n" +
+                        "Solicitado por: %s %s\n\n" +
                         "Por favor confirmar disponibilidad y fecha de entrega.",
-                producto.getNombre(), cantidad, producto.getPrecio(), empleado.getNombre(), " ", empleado.getApellidoPaterno()
+                producto.getNombre(), cantidad,
+                empleado.getNombre(), empleado.getApellidoPaterno()
         );
+
+
 
         // Enviar el correo
         emailService.sendSimpleEmail(

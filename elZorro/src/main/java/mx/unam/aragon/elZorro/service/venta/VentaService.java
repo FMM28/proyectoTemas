@@ -5,6 +5,7 @@ import mx.unam.aragon.elZorro.model.entity.DetalleVentaEntity;
 import mx.unam.aragon.elZorro.model.entity.ProductoEntity;
 import mx.unam.aragon.elZorro.model.entity.VentaEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface VentaService {
@@ -36,4 +37,6 @@ public interface VentaService {
     List<ProductoEntity> obtenerProductosPorVenta(Long ventaId);
 
     public List<DetalleVentaEntity> obtenerDetallesPorVenta(Long ventaId);
+
+    List<VentaEntity> findByFechaBetween(LocalDateTime fechaInicio, LocalDateTime fechaFin);
 }

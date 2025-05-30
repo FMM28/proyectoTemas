@@ -17,13 +17,13 @@ public class MovimientoProductoEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id")
+    @JoinColumn(name = "producto_id", nullable = true)
     private ProductoEntity producto;
 
     @Column(name = "cantidad_inicio")
     private Integer cantidadInicio;
 
-    @Column(name = "cantidad_fin")
+    @Column(name = "cantidad_fin", nullable = true)
     private Integer cantidadFin;
 
     @ManyToOne

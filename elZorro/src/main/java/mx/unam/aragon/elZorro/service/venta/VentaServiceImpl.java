@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,5 +226,11 @@ public class VentaServiceImpl implements VentaService {
     @Override
     public List<DetalleVentaEntity> obtenerDetallesPorVenta(Long ventaId) {
         return detalleVentaRepository.findByVenta(ventaId);
+    }
+
+    @Override
+    public List<VentaEntity> findByFechaBetween(LocalDateTime fechaInicio, LocalDateTime fechaFin)
+    {
+        return ventaRepository.findByFechaBetween(fechaInicio, fechaFin);
     }
 }

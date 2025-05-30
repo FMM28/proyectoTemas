@@ -1,0 +1,38 @@
+<div th:fragment="cerrar-corte" class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-zorroDark mb-6">Cierre de Caja</h2>
+
+    <!-- Información general -->
+    <div class="mb-4">
+        <p><strong>Fecha de apertura:</strong> <span th:text="${fechaApertura}"></span></p>
+        <p><strong>Fecha de cierre:</strong> <span th:text="${fechaCierre}"></span></p>
+        <p><strong>Total de ventas:</strong> $<span th:text="${#numbers.formatDecimal(totalVentas, 1, 'COMMA', 2, 'POINT')}"></span></p>
+        <p><strong>Cantidad de ventas:</strong> <span th:text="${cantidadVentas}"></span></p>
+    </div>
+
+    <!-- Tabla de resumen por producto -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-gray-100 text-zorroDark font-semibold">
+            <tr>
+                <th class="py-2 px-4 border-b">Producto</th>
+                <th class="py-2 px-4 border-b">Stock Inicial</th>
+                <th class="py-2 px-4 border-b">Vendido</th>
+                <th class="py-2 px-4 border-b">Stock Final</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productosMovimiento}" class="text-center">
+                <td class="py-2 px-4 border-b" th:text="${producto.nombreProducto}"></td>
+                <td class="py-2 px-4 border-b" th:text="${producto.stockInicial}"></td>
+                <td class="py-2 px-4 border-b" th:text="${producto.vendido}"></td>
+                <td class="py-2 px-4 border-b" th:text="${producto.stockFinal}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Botón para volver -->
+    <div class="mt-6 text-right">
+        <a href="/caja/corte" class="bg-zorroDark text-white px-4 py-2 rounded hover:bg-zorroMid transition">Volver</a>
+    </div>
+</div>
