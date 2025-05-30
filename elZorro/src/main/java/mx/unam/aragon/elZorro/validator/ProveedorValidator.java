@@ -8,7 +8,7 @@ import org.springframework.validation.Validator;
 @Component
 public class ProveedorValidator implements Validator {
     private static final String RFC_PATTERN_FISICA = "^[A-ZÑ&]{4}\\d{6}[A-Z0-9]{3}$";
-    private static final String RFC_PATTERN_MORAL = "^[A-ZÑ&]{3}\\d{6}[A-Z0-9]{3}$";
+    private static final String RFC_PATTERN_MORAL  = "^[A-ZÑ&]{3}\\d{6}[A-Z0-9]{3}$";
     private static final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     private static final String CODIGO_PATTERN = "^[0-9]{5}$";
     private static final String CELULAR_PATTERN = "^\\+?[0-9 ]+$";
