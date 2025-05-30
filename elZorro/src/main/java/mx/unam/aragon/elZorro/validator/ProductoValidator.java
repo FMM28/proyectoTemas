@@ -28,9 +28,9 @@ public class ProductoValidator implements Validator {
                 errors.rejectValue("precio", "producto.precio.zero", "Precio no puede ser 0");
             }
         }
-        if(producto.getImagen() == null || producto.getImagen().isEmpty()){
-            errors.rejectValue("imagen", "producto.imagen.vacio", "Sin Imagen");
-        }
+//        if(producto.getImagen() == null || producto.getImagen().isEmpty()){
+//            errors.rejectValue("imagen", "producto.imagen.vacio", "Sin Imagen");
+//        }
         if(producto.getStock() < 0){
             errors.rejectValue("stock","producto.stock.negativo", "Stock no puede ser negativo");
         }
